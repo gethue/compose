@@ -2,6 +2,13 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
+from editor.api import execute
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+
+# curl -X POST http://localhost:8000/query/ --data 'snippet={"statement":"SELECT 1000, 10001"}'  | jq
+
+def query(request):
+
+    data = execute(request)
+
+    return data
