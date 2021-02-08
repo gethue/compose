@@ -1,8 +1,8 @@
 asgiref==3.3.1
 Django==3.1.6
-django-cors-headers==2.4.0
+django-cors-headers==3.7.0
 django-celery-beat==1.4.0
-djangorestframework==3.9.1
+djangorestframework==3.12.2
 djangorestframework-jwt==1.11.0
 mysqlclient==2.0.3
 opentracing==2.4.0
