@@ -181,6 +181,7 @@ class SqlAlchemyApi():
   # @query_error_handler
   def execute(self, notebook, snippet):
     guid = uuid.uuid4().hex
+    is_async = False
 
     session = self._get_session(notebook, snippet)
     if session is not None:
@@ -224,7 +225,7 @@ class SqlAlchemyApi():
       'guid': guid,
       'result': {
         'has_more': result.cursor != None,
-        'data': [],
+        'data': [] if is_async else [[col for col in row] for row in result.fetchmany(10)],
         'meta': cache['meta'],
         'type': 'table'
       }
