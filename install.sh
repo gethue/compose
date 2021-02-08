@@ -23,5 +23,5 @@ else
 
   source python_env/bin/activate
 
-  pip3 install -r webapp/requirements.txt
+  pip3 install -r hue5/requirements.txt
 fi
