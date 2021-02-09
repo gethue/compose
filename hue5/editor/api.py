@@ -34,7 +34,7 @@ def _execute_notebook(request, notebook, snippet):
   response = {'status': -1}
 
   from editor.sql_alchemy import SqlAlchemyApi
-  interpreter = {'options': {'url': 'mysql://hue:hue@localhost:3306/hue'}, 'name': 'mysql', 'dialect_properties': {}}
+  interpreter = {'options': {'url': 'mysql://hue:hue@127.0.0.1:3306/hue'}, 'name': 'mysql', 'dialect_properties': {}}
   interpreter = SqlAlchemyApi(request.user, interpreter=interpreter)
   # interpreter = get_api(request, snippet)
 

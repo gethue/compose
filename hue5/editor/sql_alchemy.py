@@ -40,6 +40,30 @@ URL_PATTERN = '(?P<driver_name>.+?://)(?P<host>[^:/ ]+):(?P<port>[0-9]*).*'
 LOG = logging.getLogger(__name__)
 
 
+class SessionExpired(Exception):
+  pass
+
+class QueryExpired(Exception):
+  def __init__(self, message=None):
+    super(QueryExpired, self).__init__()
+    self.message = message
+
+class AuthenticationRequired(Exception):
+  def __init__(self, message=None):
+    super(AuthenticationRequired, self).__init__()
+    self.message = message
+
+  def __str__(self):
+    return 'AuthenticationRequired: %s' % self.message
+
+class OperationTimeout(Exception):
+  def __str__(self):
+    return 'OperationTimeout'
+
+class OperationNotSupported(Exception):
+  pass
+
+
 def query_error_handler(func):
   def decorator(*args, **kwargs):
     try:
