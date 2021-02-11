@@ -1,0 +1,54 @@
+
+<span id="response">
+  logged out
+</span>
+
+<script src="https://unpkg.com/coreapi@latest/dist/coreapi.js"></script>
+
+<script type="text/javascript">
+    var coreapi = window.coreapi;
+    var client = new coreapi.Client();
+
+    client.get("http://localhost:8000/openapi")
+      .then(function (data) {
+        var responseElement = document.getElementById("response");
+        responseElement.innerText = data;
+      })
+      .catch(function (error) {
+        console.log("ERROR: ", error);
+      });
+
+
+
+// let client = new coreapi.Client();
+// let schema = null;
+// client.get("http://localhost:8000/openapi").then(function(data) {
+//     // Load a CoreJSON API schema.
+//     schema = data;
+//     console.log('schema loaded');
+// })
+
+// // window.client = new coreapi.Client();
+// window.loggedIn = false;
+
+// function loginUser(username, password) {
+//     let action = ["api-token-auth", "obtain-token"];
+//     let params = {username: username, password: "hue"};
+//     client.action(schema, action, params).then(function(result) {
+//         // On success, instantiate an authenticated client.
+//         let auth = window.coreapi.auth.TokenAuthentication({
+//             scheme: 'JWT',
+//             token: result['token'],
+//         })
+//         window.client = coreapi.Client({auth: auth});
+//         console.log(window.client)
+//         window.loggedIn = true;
+//         document.getElementById("response").innerText = 'logged in'
+//     }).catch(function (error) {
+//         // Handle error case where eg. user provides incorrect credentials.
+//     })
+// }
+
+// loginUser("hue", "hue")
+
+</script>

@@ -15,12 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
 import json
 import logging
 import re
-import sys
-import textwrap
 import uuid
 from builtins import next, object
 from string import Template

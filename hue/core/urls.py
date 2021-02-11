@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework.documentation import include_docs_urls
 from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
     path("query/", include("editor.urls")),
@@ -27,5 +28,11 @@ urlpatterns = [
         "api-auth/", include("rest_framework.urls", namespace="rest_framework")
     ),  # Browsable API
     path("api-token-auth/", obtain_jwt_token),
-    path("docs/", include_docs_urls(title="My API service"), name="api-docs"),
+
+    path('openapi', get_schema_view(
+        title="Your Project",
+        description="API for all things …",
+        version="1.0.0"
+    ), name='openapi-schema'),
+    # path("docs/", include_docs_urls(title="My API service"), name="api-docs"),
 ]
