@@ -31,44 +31,47 @@ LOG = logging.getLogger(__name__)
 
 
 def _execute_notebook(request, notebook, snippet):
-  response = {'status': -1}
+    response = {"status": -1}
 
-  from editor.sql_alchemy import SqlAlchemyApi
-  interpreter = {'options': {'url': 'mysql://hue:hue@127.0.0.1:3306/hue'}, 'name': 'mysql', 'dialect_properties': {}}
-  interpreter = SqlAlchemyApi(request.user, interpreter=interpreter)
-  # interpreter = get_api(request, snippet)
+    from editor.sql_alchemy import SqlAlchemyApi
 
+    interpreter = {
+        "options": {"url": "mysql://hue:hue@127.0.0.1:3306/hue"},
+        "name": "mysql",
+        "dialect_properties": {},
+    }
+    interpreter = SqlAlchemyApi(request.user, interpreter=interpreter)
+    # interpreter = get_api(request, snippet)
 
-  with opentracing.tracer.start_span('interpreter') as span:
-    # interpreter.execute needs the sessions, but we don't want to persist them
-    # pre_execute_sessions = notebook['sessions']
-    # notebook['sessions'] = sessions
-    response['handle'] = interpreter.execute(notebook, snippet)
-    # notebook['sessions'] = pre_execute_sessions
+    with opentracing.tracer.start_span("interpreter") as span:
+        # interpreter.execute needs the sessions, but we don't want to persist them
+        # pre_execute_sessions = notebook['sessions']
+        # notebook['sessions'] = sessions
+        response["handle"] = interpreter.execute(notebook, snippet)
+        # notebook['sessions'] = pre_execute_sessions
 
+    response["status"] = 0
 
-  response['status'] = 0
-
-  return response
+    return response
 
 
 def execute(request, dialect=None):
-  notebook = json.loads(request.POST.get('notebook', '{}'))
-  snippet = json.loads(request.POST.get('snippet', '{}'))
+    notebook = json.loads(request.POST.get("notebook", "{}"))
+    snippet = json.loads(request.POST.get("snippet", "{}"))
 
-  # Added
-  notebook['sessions'] = []
-  if not snippet.get('statement'):
-    snippet['statement'] = 'SELECT 1, 2, 3'
+    # Added
+    notebook["sessions"] = []
+    if not snippet.get("statement"):
+        snippet["statement"] = "SELECT 1, 2, 3"
 
-  if dialect:
-    notebook['dialect'] = dialect
+    if dialect:
+        notebook["dialect"] = dialect
 
-  with opentracing.tracer.start_span('notebook-execute') as span:
-    span.set_tag('user-id', request.user.username)
+    with opentracing.tracer.start_span("notebook-execute") as span:
+        span.set_tag("user-id", request.user.username)
 
-    response = _execute_notebook(request, notebook, snippet)
+        response = _execute_notebook(request, notebook, snippet)
 
-    span.set_tag('query-id', response.get('handle', {}).get('guid'))
+        span.set_tag("query-id", response.get("handle", {}).get("guid"))
 
-  return JsonResponse(response)
+    return JsonResponse(response)
