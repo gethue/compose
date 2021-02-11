@@ -1,10 +1,9 @@
 # hue
 
 
-
 ## Query
 
-    curl -X POST http://localhost:8000/query/ --data 'snippet={"statement":"SELECT 1000, 1001"}'  | jq
+    curl -X POST http://localhost:8000/query/ --data 'snippet={"statement":"SELECT 1000, 1001"}' | jq
 
 ## Auth
 
@@ -19,7 +18,7 @@
     source python_env/bin/activate
 
 
-    curl -X POST http://localhost:8000/notebook/api/execute/mysql --data 'snippet={"statement":"SELECT 1000, 1001"}'  | jq
+    curl -X POST http://localhost:8000/notebook/api/execute/mysql --data 'snippet={"statement":"SELECT 1000, 1001"}' | jq
 
 
 ## Docker
