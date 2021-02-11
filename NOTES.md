@@ -4,6 +4,9 @@ Add mypy, black, coverable ... like spacy
 https://github.com/python-poetry/poetry ?
 https://pre-commit.com/ black...
 
+    black hue
+    isort --profile django hue
+
 ## Query
 
     curl -X POST http://localhost:8000/query/ --data 'snippet={"statement":"SELECT 1000, 1001"}' | jq

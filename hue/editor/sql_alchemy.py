@@ -15,22 +15,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import next, object
 import datetime
 import json
 import logging
-import uuid
 import re
 import sys
 import textwrap
-
+import uuid
+from builtins import next, object
 from string import Template
 
 from django.core.cache import caches
 from django.utils.translation import ugettext as _
-from sqlalchemy import create_engine, inspect, Table, MetaData
-from sqlalchemy.exc import OperationalError, UnsupportedCompilationError, CompileError
-
+from sqlalchemy import MetaData, Table, create_engine, inspect
+from sqlalchemy.exc import (
+    CompileError, OperationalError, UnsupportedCompilationError,
+)
 
 ENGINES = {}
 CONNECTIONS = {}

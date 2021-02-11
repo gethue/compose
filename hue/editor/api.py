@@ -19,13 +19,10 @@ import json
 import logging
 
 import opentracing
-
 from django.db.models import Q
+from django.http import JsonResponse
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_GET, require_POST
-
-from django.http import JsonResponse
-
 
 LOG = logging.getLogger(__name__)
 
