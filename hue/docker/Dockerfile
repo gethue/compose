@@ -8,8 +8,8 @@ RUN apt-get update -y && apt-get install -y \
   libmysqlclient-dev \
   python3-venv
 
-ADD . /hue5
-WORKDIR /hue5
+ADD . /hue
+WORKDIR /hue
 
 RUN pip3 install virtualenv && python3 -m venv python_env
 

@@ -1,4 +1,4 @@
-# hue5
+# hue
 
 
 
@@ -24,7 +24,7 @@
 
 ## Docker
 
-    docker build hue5 -t gethue/compose-api:latest -f hue5/docker/Dockerfile
+    docker build hue -t gethue/compose-api:latest -f hue/docker/Dockerfile
 
     docker push gethue/compose-api:latest
 
@@ -34,10 +34,11 @@
 
 ### Official
 
-    docker run -it --network host -p 9003:8000 gethue/compose-api:latest
     Right now expects a: mysql://hue:hue@127.0.0.1:3306/hue
-    curl -X POST http://localhost:8000/notebook/api/execute/mysql --data 'snippet={"statement":"SELECT 1000, 1001"}'
 
+    docker run -it --network host -p 9003:8000 gethue/compose-api:latest
+
+    curl -X POST http://localhost:8000/notebook/api/execute/mysql --data 'snippet={"statement":"SELECT 1000, 1001"}'
 
     curl -X POST -d "username=hue&password=hue" http://localhost:9003/api-token-auth/
 
