@@ -1,5 +1,8 @@
 # hue
 
+Add mypy, black, coverable ... like spacy
+https://github.com/python-poetry/poetry ?
+https://pre-commit.com/ black...
 
 ## Query
 
@@ -45,7 +48,7 @@
 
     Probably worth quick use of https://www.django-rest-framework.org/topics/api-clients/#installation-with-node (and we fix it as needed).
 
-# Pypi
+## Pypi
 
     https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives
 
@@ -62,3 +65,16 @@
     python3 -m twine upload dist/*
     python3 -m pip install gethue
     https://pypi.org/project/gethue/
+
+
+## API Docs / UI
+
+    request.data not POST
+
+    http://127.0.0.1:8000/query/
+
+    {"snippet":{"statement":"SELECT 1000, 1001"}}
+
+
+    https://www.django-rest-framework.org/api-guide/requests/
+    https://github.com/axnsan12/drf-yasg/
