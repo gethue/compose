@@ -1,0 +1,66 @@
+
+
+<script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
+
+<script type="text/javascript">
+
+  const API_URL = "http://localhost:8000";
+  axios.defaults.baseURL = API_URL;
+
+  axios.post('/api-token-auth/', {username: "hue", password: "hue"}).then(function(data) {
+    console.log(data['data']);
+    axios.defaults.headers.common['Authorization'] = 'JWT ' + data['data']['token'];
+  }).then(function() {
+    axios.post('/query/', {snippet: "{\"statement\":\"SELECT 1000, 1001\""}).then(function(data) {
+      console.log(data['data']);
+    });
+  });
+
+  //axios.post('/auth/verify-token/', {token: token});
+
+
+</script>
+
+
+
+<!--
+<script src="https://unpkg.com/coreapi@latest/dist/coreapi.js"></script>
+
+<span id="response">
+  logged out
+</span>
+ -->
+
+<script type="text/javascript">
+//     // Trying https://www.django-rest-framework.org/topics/api-clients/#javascript-client-library
+
+//     var coreapi = window.coreapi;
+//     var client = new coreapi.Client();
+
+//     client.get("http://localhost:8000/openapi")
+//     .then(function (data) {
+//       window.schema = data;
+//       loginUser("hue", "hue")
+//     })
+//     .catch(function (error) {
+//       console.log("ERROR: ", error);
+//     });
+
+//   function loginUser(username, password) {
+//     let action = ["api-token-auth", "obtain-token"];
+//     let params = {username: username, password: password};
+
+//     client.action(window.schema, action, params).then(function(result) {
+//         // On success, instantiate an authenticated client.
+//         let auth = coreapi.auth.TokenAuthentication({
+//             scheme: 'JWT',
+//             token: result['token'],
+//         })
+//         window.client = coreapi.Client({auth: auth});
+//         window.loggedIn = true;
+//     }).catch(function (error) {
+//       console.log("ERROR 2: ", error);
+//         // Handle error case where eg. user provides incorrect credentials.
+//     })
+//   }
+</script>
