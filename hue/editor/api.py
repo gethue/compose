@@ -33,8 +33,8 @@ def _execute_notebook(request, notebook, snippet):
     from editor.sql_alchemy import SqlAlchemyApi
 
     interpreter = {
-        "options": {"url": "mysql://hue:hue@127.0.0.1:3306/hue"},
-        "name": "mysql",
+        "options": {"url": "sqlite:///../db.sqlite3"},
+        "name": "sqlite",
         "dialect_properties": {},
     }
     interpreter = SqlAlchemyApi(request.user, interpreter=interpreter)
