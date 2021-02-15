@@ -21,6 +21,8 @@ RUN source python_env/bin/activate
 
 RUN pip3 install -r requirements.txt
 
+# Should copy virtual env into new lean image
+
 # COPY core/local_settings.py.tmpl core/local_settings.py
 COPY docker/startup.sh .
 
