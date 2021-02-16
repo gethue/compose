@@ -93,6 +93,12 @@ TODO
     mypy
     coverable
     pytest
+    More https://pre-commit.com/hooks.html ?
+
+    [![Join the chat at https://gitter.im/timothycrosley/isort](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/timothycrosley/isort?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+    [![Downloads](https://pepy.tech/badge/isort)](https://pepy.tech/project/isort)
+    [![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/pycqa/isort/?ref=repository-badge)
+______
 
 ## Pypi
 
