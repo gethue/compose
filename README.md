@@ -14,3 +14,9 @@ Hue is also ideal for building your own [Cloud SQL Editor](https://docs.gethue.c
 
 Read more on [gethue.com](http://gethue.com).
 
+
+# Dev
+
+Python style: [black](https://github.com/psf/black)
+
+    pre-commit install
