@@ -26,7 +26,9 @@ from django.core.cache import caches
 from django.utils.translation import ugettext as _
 from sqlalchemy import MetaData, Table, create_engine, inspect
 from sqlalchemy.exc import (
-    CompileError, OperationalError, UnsupportedCompilationError,
+    CompileError,
+    OperationalError,
+    UnsupportedCompilationError,
 )
 
 ENGINES = {}
