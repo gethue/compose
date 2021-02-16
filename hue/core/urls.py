@@ -22,15 +22,13 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from rest_framework.documentation import include_docs_urls
-from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from rest_framework.schemas import get_schema_view
+from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 
 urlpatterns = [
     path("v1/editor/", include("editor.urls")),
-    path("notebook/", include("editor.urls")),  # Hue 4, to drop
     # path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
-    path("api-token-auth/", obtain_jwt_token),  # To drop
     path("v1/iam/get/auth-token/", obtain_jwt_token),
     path("v1/iam/verify/auth-token/", verify_jwt_token),
 ]
