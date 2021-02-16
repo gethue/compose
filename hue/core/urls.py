@@ -26,11 +26,13 @@ from rest_framework.schemas import get_schema_view
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 
 urlpatterns = [
-    path("v1/editor/", include("editor.urls")),
-    # path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("v1/iam/get/auth-token/", obtain_jwt_token),
     path("v1/iam/verify/auth-token/", verify_jwt_token),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+]
+
+urlpatterns += [
+    path("v1/editor/", include("editor.urls")),
 ]
 
 urlpatterns += [

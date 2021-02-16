@@ -30,3 +30,12 @@ Read more on [gethue.com](http://gethue.com).
 Python style: [black](https://github.com/psf/black)
 
     pre-commit install
+
+    gh pr create --fill --assignee=romainr --reviewer=romainr
+    gh pr create --fill --assignee=romainr --web
+
+    source python_env/bin/activate
+    cd hue
+    pip install
+
+    python manage.py runserver
