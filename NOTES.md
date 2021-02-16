@@ -81,13 +81,18 @@ MySql
 
 ## CI
 
-Add mypy/pylance, black, coverable ... like spacy
-https://github.com/python-poetry/poetry ?
-https://pre-commit.com/ black...
+Done
 
+    https://pre-commit.com/hooks.html + GH Action
     black hue
     isort --profile django hue
 
+TODO
+
+    pylance
+    mypy
+    coverable
+    pytest
 
 ## Pypi
 
