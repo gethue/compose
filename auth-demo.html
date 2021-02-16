@@ -4,10 +4,10 @@
 
 <script type="text/javascript">
 
-  const API_URL = "http://localhost:8000";
+  const API_URL = "http://localhost:8005";
   axios.defaults.baseURL = API_URL;
 
-  axios.post('/api-token-auth/', {username: "hue", password: "hue"}).then(function(data) {
+  axios.post('v1/iam/get/auth-token/', {username: "hue", password: "hue"}).then(function(data) {
     console.log(data['data']);
     axios.defaults.headers.common['Authorization'] = 'JWT ' + data['data']['token'];
   }).then(function() {
@@ -16,10 +16,16 @@
     });
   });
 
-  //axios.post('/auth/verify-token/', {token: token});
+  //axios.post('v1/iam/verify/auth-token/', {token: token});
 
 </script>
 
+
+<!--
+
+  SQL Scratchpad
+
+-->
 
 
 <!--

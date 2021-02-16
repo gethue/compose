@@ -16,32 +16,28 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 from rest_framework.documentation import include_docs_urls
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
-    path("editor/", include("editor.urls")),
+    path("v1/editor/", include("editor.urls")),
     path("notebook/", include("editor.urls")),  # Hue 4, to drop
+
     # path("admin/", admin.site.urls),
+
     path(
         "api-auth/", include("rest_framework.urls", namespace="rest_framework")
     ),
-    path("api-token-auth/", obtain_jwt_token),
 
-    # path('openapi', get_schema_view(
-    #     title="Your Project",
-    #     description="API for all things …",
-    #     version="1.0.0"
-    # ), name='openapi-schema'),
-    # path("docs/", include_docs_urls(title="My API service"), name="api-docs"),
+    path("api-token-auth/", obtain_jwt_token), # To drop
+    path("v1/iam/get/auth-token/", obtain_jwt_token),
+    path("v1/iam/verify/auth-token/", verify_jwt_token),
 ]
 
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 urlpatterns += [
-    # YOUR PATTERNS
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # Optional UI:
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]

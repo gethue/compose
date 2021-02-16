@@ -1,18 +1,19 @@
 # hue
 
-  editor
-  iam (auth, users, orgs..)
-  documents
-  scheduler, catalog, storage, ..
-  ml
-  docs, tools, docker, kubernetes...
+  compose
+    editor
+    iam (auth, users, orgs..)
+    documents
+    scheduler, catalog, storage, ..
+    ml
+    docs, tools, docker, kubernetes...
 
-  e.g. https://github.com/kubernetes projects
+  e.g. Single or multi repo: https://github.com/kubernetes projects (docs, demos, roadmap etc?) Single++
 
   docker
   docker-compose?
 
-  pypi modules full hue or/and apps?
+  pypi modules full hue or/and apps? compose --> pure editor (no DBs?)
 
 
 # API
@@ -53,7 +54,7 @@ No CSRF needed with JWT (no [auto creds](https://security.stackexchange.com/ques
 
     source python_env/bin/activate
 
-    curl -X POST http://localhost:8000/notebook/api/execute/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}' | jq
+    curl -u hue:hue -X POST http://localhost:8000/v1/editor/execute/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}' | jq
 
 ## Docker
 
