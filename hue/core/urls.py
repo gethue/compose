@@ -32,9 +32,15 @@ urlpatterns = [
     path("v1/iam/auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 
+
+# namespace for version?
+# https://www.django-rest-framework.org/api-guide/versioning/#urlpathversioning
+
 urlpatterns += [
     path("v1/editor/", include("editor.urls")),
 ]
+
+urlpatterns += [path("v1/connectors/", include("connectors.urls"))]
 
 urlpatterns += [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

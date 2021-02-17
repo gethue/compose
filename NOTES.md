@@ -1,8 +1,9 @@
 # hue == compose
 
-hue5 --> compose
+hue5 --> gethue/compose
   hue --> compose
     editor
+    connectors
     iam (auth, users, orgs..)
     documents
     scheduler, catalog, storage, ..
@@ -13,18 +14,19 @@ hue5 --> compose
   e.g. Single or multi repo: https://github.com/kubernetes projects (docs, demos, roadmap etc?) Single++
 
   docker
-  docker-compose?
+  docker-compose
 
-  pypi modules full hue or/and apps? compose --> pure editor (no DBs?)
+  pypi modules full compose
   k8s: analytics, metrics, tracing, logs
 
+  clean license
+  overall archi repo and hue integration. same with ref architecture diagram. blog post on all improvements and deep dive in some of the topics: evolving + better practicse/learnings
 
 # API
 
 Clean, skeletons for very modern. Templates to fill-up from Hue 4 code when switching. Hue 4 will pip install the Hue 5 modules.
 Keeping Hue 5 as name, but API apps in "new repo" (folder or git, named "compose").
 Runs on 8005
-delete views.py --> use api.py
 
 ## Auth
 

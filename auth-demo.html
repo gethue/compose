@@ -16,6 +16,10 @@
     axios.post('/v1/editor/query/sqlite', {snippet: "{\"statement\":\"SELECT 1000, 1001\""}).then(function(data) {
       console.log(data['data']);
     });
+
+    axios.post('/v1/connectors/types/').then(function(data) {
+      console.log(data['data']);
+    });
   });
 
 </script>
