@@ -1,12 +1,14 @@
-# hue
+# hue == compose
 
-  compose
+hue5 --> compose
+  hue --> compose
     editor
     iam (auth, users, orgs..)
     documents
     scheduler, catalog, storage, ..
     ml
     docs, tools, docker, kubernetes...
+  compose-ui
 
   e.g. Single or multi repo: https://github.com/kubernetes projects (docs, demos, roadmap etc?) Single++
 
@@ -14,6 +16,7 @@
   docker-compose?
 
   pypi modules full hue or/and apps? compose --> pure editor (no DBs?)
+  k8s: analytics, metrics, tracing, logs
 
 
 # API
@@ -119,6 +122,14 @@ ______
     python3 -m pip install gethue
     https://pypi.org/project/gethue/
 
+
+    from compose.editor import execute
+
+    execute('SELECT 1', url="sqlite:///../db.sqlite3")
+    execute('SELECT 1', {"url: "", ...})
+    execute('SELECT 1', connector_id)
+
+    execute('SELECT 1', {connector}, sync=True)
 
 ## API Docs / UI
 

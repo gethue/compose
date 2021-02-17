@@ -28,7 +28,8 @@ from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 urlpatterns = [
     path("v1/iam/get/auth-token/", obtain_jwt_token),
     path("v1/iam/verify/auth-token/", verify_jwt_token),
-    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    # path("api-auth/", include("rest_framework.urls", namespace="rest_framework")), # Good to delete if live docs auth works
+    path("v1/iam/auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 
 urlpatterns += [
