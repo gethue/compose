@@ -1,4 +1,6 @@
-# hue == compose
+# Compose
+
+Next prio: documents? iam? /autocomplete, editor connectors API (flink, ksql... wait a bit)
 
 hue5 --> gethue/compose
   hue --> compose
@@ -9,7 +11,7 @@ hue5 --> gethue/compose
     scheduler, catalog, storage, ..
     ml
     docs, tools, docker, kubernetes...
-  compose-ui
+  compose-ui / interfaces? (single goal: compose)
 
   e.g. Single or multi repo: https://github.com/kubernetes projects (docs, demos, roadmap etc?) Single++
 
@@ -19,7 +21,7 @@ hue5 --> gethue/compose
   pypi modules full compose
   k8s: analytics, metrics, tracing, logs
 
-  clean license
+  clean license (check precommits?)
   overall archi repo and hue integration. same with ref architecture diagram. blog post on all improvements and deep dive in some of the topics: evolving + better practicse/learnings
 
 # API
