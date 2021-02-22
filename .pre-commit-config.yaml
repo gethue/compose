@@ -10,12 +10,6 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
-      - id: isort
-        name: isort (cython)
-        types: [cython]
-      - id: isort
-        name: isort (pyi)
-        types: [pyi]
   - repo: https://github.com/psf/black
     rev: 20.8b1 # Replace by any tag/version: https://github.com/psf/black/tags
     hooks:
