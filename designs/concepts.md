@@ -60,8 +60,8 @@ The system will be one-click to run and provide standard Cloud CNCF monitoring t
 
 # REST API
 
-Clean, skeletons for very modern.
-Runs on 8005
+Clean, skeletons for modern. Leveraging Django REST Framework.
+Runs on port 8005.
 
 ## Execute sync query
 

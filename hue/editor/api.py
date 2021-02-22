@@ -68,6 +68,16 @@ def query(request, dialect=None):
     return data
 
 
+@api_view(["POST"])
+def autocomplete(
+    request, server=None, database=None, table=None, column=None, nested=None
+):
+    print(request.data)
+    print(request.POST)
+    data = execute(request)
+    return data
+
+
 def _execute_notebook(request, notebook, snippet):
     response = {"status": -1}
 
