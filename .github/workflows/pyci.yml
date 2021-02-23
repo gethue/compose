@@ -22,6 +22,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r hue/requirements.txt
 
+# Black
+# Flake8
+# isort
+
 #    - name: Lint with flake8
 #      run: |
 #        # stop the build if there are Python syntax errors or undefined names
