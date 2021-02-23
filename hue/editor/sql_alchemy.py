@@ -19,17 +19,10 @@ import json
 import logging
 import re
 import uuid
-from builtins import next, object
 from string import Template
 
-from django.core.cache import caches
-from django.utils.translation import ugettext as _
-from sqlalchemy import MetaData, Table, create_engine, inspect
-from sqlalchemy.exc import (
-    CompileError,
-    OperationalError,
-    UnsupportedCompilationError,
-)
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 
 ENGINES = {}
 CONNECTIONS = {}
