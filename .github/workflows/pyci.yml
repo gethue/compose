@@ -11,7 +11,9 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -23,32 +25,26 @@ jobs:
         pip install -r hue/requirements.txt
 
     - name: Black Lint
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-    - uses: psf/black@stable
+      uses: psf/black@stable
       with:
         args: "hue --check"
 
     - name: isort Lint
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+      uses: jamescurtin/isort-action@master
       with:
-        python-version: 3.8
-    - uses: jamescurtin/isort-action@master
-      with:
-          requirementsFiles: "hue/requirements.txt"
+        requirementsFiles: "hue/requirements.txt"
+        configuration: "--profile black hue"
 
-    - name: Tests
+    - name: run tests
       run: |
         pytest --cov=hue
 
     - name: Upload coverage
-    - uses: actions/checkout@master
-    - uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
         #files: ./coverage1.xml,./coverage2.xml # optional
         #flags: unittests # optional
         #name: codecov-umbrella # optional
-        fail_ci_if_error: true # optional (default = false)
-        verbose: true # optional (default = false)
+        fail_ci_if_error: true
+        verbose: true
