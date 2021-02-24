@@ -65,7 +65,9 @@ Runs on port 8005.
 
 ## Execute sync query
 
-    curl -u hue:hue -X POST http://localhost:8000/notebook/api/execute/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
+    curl -u hue:hue -X POST http://localhost:8000/notebook/api/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
+
+    curl -u hue:hue https://demo.gethue.com/api/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
 
 ## Auth
 
@@ -155,7 +157,7 @@ To manually build:
 
     docker run -it -p 8005:8000 gethue/compose:latest
 
-    curl -X POST http://localhost:8000/notebook/api/execute/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'  | jq
+    curl -X POST http://localhost:8000/notebook/api/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'  | jq
 
 ## CI
 

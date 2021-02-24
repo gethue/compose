@@ -43,8 +43,11 @@ SECRET_KEY = "zj^!-wlzr8y^7%9$+yyxnxeh%^8p9(vf-vrvsi^1f1ylrk05sv"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "demo.gethue.com",
+]
 
 # Application definition
 
