@@ -29,9 +29,23 @@ repos:
     rev: v1.1
     hooks:
       - id: autoflake
-        args: ['--in-place', '--remove-all-unused-imports', '--remove-unused-variable', '-r', 'hue']
+        args: ['--in-place', '--remove-all-unused-imports', '--remove-unused-variable', '--expand-star-imports', '-r', 'hue']
   - repo: https://github.com/pre-commit/mirrors-pylint
     rev: 'v2.6.0'
     hooks:
       - id: pylint
         args: ['--disable=all', '--enable="bad-whitespace,bad-indentation,line-too-long"']
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.9
+    hooks:
+    -   id: forbid-crlf
+    -   id: remove-crlf
+    -   id: forbid-tabs
+    -   id: remove-tabs
+    -   id: insert-license
+        files: \.py$
+        args:
+        - --license-filepath
+        - docs/LICENSE-header.txt          # defaults to: LICENSE.txt
+        - --comment-style
+        - "#"

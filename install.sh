@@ -17,3 +17,7 @@ else
   sudo pip3 install virtualenv
   python3.8 -m venv python_env
 fi
+
+source python_env/bin/activate
+cd hue
+pip install
