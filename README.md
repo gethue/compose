@@ -1,9 +1,9 @@
-[![PyPI version](https://badge.fury.io/py/hue.svg)](https://badge.fury.io/py/hue)
-[![Test Status](https://github.com/gethue/compose/workflows/Python%20CI/badge.svg?branch=master)](https://github.com/gethue/compose/actions?query=workflow%3ATest)
-[![DockerPulls](https://img.shields.io/docker/pulls/gethue/hue.svg)](https://registry.hub.docker.com/u/gethue/hue/)
-![GitHub contributors](https://img.shields.io/github/contributors-anon/cloudera/hue.svg)
+[![PyPI version](https://badge.fury.io/py/gethue.svg)](https://badge.fury.io/py/gethue)
+[![Test Status](https://github.com/gethue/compose/workflows/Python%20CI/badge.svg?branch=master)](https://github.com/gethue/compose/actions?query=Python%20CI)
+[![DockerPulls](https://img.shields.io/docker/pulls/gethue/compose.svg)](https://registry.hub.docker.com/u/gethue/compose/)
+![GitHub contributors](https://img.shields.io/github/contributors-anon/gethue/compose.svg)
 [![Code coverage Status](https://codecov.io/gh/gethue/compose/branch/master/graph/badge.svg)](https://codecov.io/gh/gethue/compose)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.org/project/hue/)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.org/project/gethue/)
 
 <kbd><img src="https://raw.githubusercontent.com/gethue/compose/master/docs/images/compose_button.png"/></kbd>
 
@@ -29,6 +29,7 @@ Python style: [black](https://github.com/psf/black)
 
 One time:
 
+    git clone https://github.com/gethue/compose.git; cd compose
     ./install.sh
     pre-commit install
 

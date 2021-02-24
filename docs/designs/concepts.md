@@ -146,10 +146,14 @@ Starting the API server is now a standard Django command:
 
 ## Docker
 
-    docker build hue -t gethue/compose-api:latest -f hue/docker/Dockerfile
-    docker push gethue/compose-api:latest
+The image building is automated on https://hub.docker.com/repository/docker/gethue/compose and `latest` is rebuilt after each commit to master.
 
-    docker run -it -p 8005:8000 gethue/compose-api:latest
+To manually build:
+
+    docker build compose -t gethue/compose:latest -f compose/docker/Dockerfile
+    docker push gethue/compose:latest
+
+    docker run -it -p 8005:8000 gethue/compose:latest
 
     curl -X POST http://localhost:8000/notebook/api/execute/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'  | jq
 
