@@ -25,9 +25,9 @@ Note that a lot of the format/syntax will change until v1 and in the future the 
 
 Here are the core components:
 
-* api server
-* static UI
-* DBs
+* API server
+* Static Web UI
+* Database server
 
 And the optional services:
 
