@@ -31,6 +31,6 @@ Python style: [black](https://github.com/psf/black)
 
     source python_env/bin/activate
     cd hue
-    pip install
+    pip install # One time only
 
     python manage.py runserver
