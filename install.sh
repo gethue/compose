@@ -19,5 +19,5 @@ else
 fi
 
 source python_env/bin/activate
-cd hue
+cd compose
 pip install

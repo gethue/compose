@@ -27,22 +27,22 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r hue/requirements.txt
+        pip install -r compose/requirements.txt
 
     - name: Black Lint
       uses: psf/black@stable
       with:
-        args: "hue --check"
+        args: "compose --check"
 
     - name: isort Lint
       uses: jamescurtin/isort-action@master
       with:
-        requirementsFiles: "hue/requirements.txt"
-        configuration: "--profile black hue"
+        requirementsFiles: "compose/requirements.txt"
+        configuration: "--profile black compose"
 
     - name: run tests
       run: |
-        pytest --cov=hue
+        pytest --cov=compose
 
     - name: Upload coverage
       uses: codecov/codecov-action@v1

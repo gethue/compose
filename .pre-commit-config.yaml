@@ -29,7 +29,7 @@ repos:
     rev: v1.1
     hooks:
       - id: autoflake
-        args: ['--in-place', '--remove-all-unused-imports', '--remove-unused-variable', '--expand-star-imports', '-r', 'hue']
+        args: ['--in-place', '--remove-all-unused-imports', '--remove-unused-variable', '--expand-star-imports', '-r', 'compose']
   - repo: https://github.com/pre-commit/mirrors-pylint
     rev: 'v2.6.0'
     hooks:

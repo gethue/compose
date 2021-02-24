@@ -8,9 +8,10 @@
 Compose
 -------
 
-Core libs of the Hue Query Editor. Compose is a mature open source SQL Assistant for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/).
+Core libs of the [Hue Query Editor](http://gethue.com).
+Compose is a mature open source SQL Assistant for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/).
 
-Many companies and organizations use Compose to quickly answer questions via self-service querying.
+Many companies and organizations use Hue to quickly answer questions via self-service querying.
 
 * 1000+ customers
 * Top Fortune 500
@@ -18,8 +19,6 @@ Many companies and organizations use Compose to quickly answer questions via sel
 are executing 1000s of queries daily.
 
 Also ideal for building your own [Cloud SQL Editor](https://docs.gethue.com/developer/components/) and any contributions are welcome.
-
-Read more on [gethue.com](http://gethue.com).
 
 
 # Dev
@@ -34,5 +33,5 @@ One time:
 Start API:
 
     source python_env/bin/activate
-    cd hue
+    cd compose
     python manage.py runserver
