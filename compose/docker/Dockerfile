@@ -1,11 +1,9 @@
-# Switch to python
-# FROM ubuntu:20.04
-from python:3.8.5
+FROM python:3.8.5
 LABEL description="Compose API - gethue.com"
 
 RUN apt-get update -y && apt-get install -y \
   python3-pip \
-  #libmariadb-dev-compat \
+  # libmariadb-dev-compat \
   # Needed below?
   # libssl-dev \
   # libmysqlclient-dev \

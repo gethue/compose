@@ -38,3 +38,12 @@ Start API:
     source python_env/bin/activate
     cd compose
     python manage.py runserver
+
+# API
+
+    https://demo.gethue.com/api/api/schema/swagger-ui/
+    https://demo.gethue.com/api/api/schema/redoc/
+
+    curl -u hue:hue https://demo.gethue.com/api/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
+
+Note: on local host or docker strip one of the `/api`
