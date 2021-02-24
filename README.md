@@ -1,8 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/hue.svg)](https://badge.fury.io/py/hue)
-[![Test Status](https://github.com/gethue/compose/workflows/Python CI/badge.svg?branch=master)](https://github.com/gethue/compose/actions?query=workflow%3ATest)
+[![Test Status](https://github.com/gethue/compose/workflows/Python%20CI/badge.svg?branch=master)](https://github.com/gethue/compose/actions?query=workflow%3ATest)
 [![DockerPulls](https://img.shields.io/docker/pulls/gethue/hue.svg)](https://registry.hub.docker.com/u/gethue/hue/)
 ![GitHub contributors](https://img.shields.io/github/contributors-anon/cloudera/hue.svg)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Code coverage Status](https://codecov.io/gh/gethue/compose/branch/master/graph/badge.svg)](https://codecov.io/gh/gethue/compose)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.org/project/hue/)
 
