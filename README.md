@@ -5,7 +5,7 @@
 [![Code coverage Status](https://codecov.io/gh/gethue/compose/branch/master/graph/badge.svg)](https://codecov.io/gh/gethue/compose)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.org/project/hue/)
 
-![Compose Logo](https://raw.githubusercontent.com/gethue/compose/master/docs/images/compose_button.png)
+<kbd><img src="https://raw.githubusercontent.com/gethue/compose/master/docs/images/compose_button.png"/></kbd>
 
 Compose
 -------
