@@ -10,22 +10,11 @@
 Compose
 -------
 
-[Hue Query Editor](http://gethue.com) component.
-Compose is a mature open source SQL Assistant for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/).
+[Query Editor](http://gethue.com) component.
 
-Many companies and organizations use Hue to quickly answer questions via self-service querying.
-
-* 1000+ customers
-* Top Fortune 500
-
-are executing 1000s of queries daily.
-
-Compose is also ideal for building your own [Cloud SQL Editor](https://docs.gethue.com/developer/components/) and any contributions are welcome.
-
+Compose is the open source module powering the Hue SQL Assistant. It comes as Web service for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/) or building your own [Cloud SQL Editor](https://docs.gethue.com/developer/components/). Contributions are welcome.
 
 # Dev
-
-Python style: [black](https://github.com/psf/black)
 
 One time:
 
@@ -41,9 +30,15 @@ Start API:
 
 # API
 
-* https://demo.gethue.com/api/api/schema/swagger-ui/
-* https://demo.gethue.com/api/api/schema/redoc/
+Hello World query:
 
-    curl -u hue:hue https://demo.gethue.com/api/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
+    curl -u hue:hue https://api.gethue.com/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
 
-Note: on local host or docker strip one of the `/api` of the URL
+Live docs:
+
+* https://api.gethue.com/api/schema/swagger-ui/
+* https://api.gethue.com/api/schema/redoc/
+
+Docker
+
+    docker run -it -p 8005:8005 gethue/compose:latest
