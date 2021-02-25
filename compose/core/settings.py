@@ -46,7 +46,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "demo.gethue.com",
+    "api.gethue.com",
 ]
 
 # Application definition
