@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
+
+from compose.editor.sql_alchemy import SqlAlchemyApi
+
 
 def inc(x):
     return x + 1
@@ -26,3 +30,54 @@ def test_answer():
 
 def test_answer_2():
     assert inc(4) == 5
+
+
+@pytest.mark.live
+@pytest.mark.parametrize(("dialect"), [("sqlite")])
+def test_execute_statement(dialect):
+    class User:
+        def __init__(self):
+            self.username = "test"
+
+    interpreter = {
+        "options": {"url": "sqlite:///../db.sqlite3"},
+        "name": "sqlite",
+        "dialect_properties": {},
+    }
+
+    interpreter = SqlAlchemyApi(user=User(), interpreter=interpreter)
+
+    notebook = {}
+    snippet = {}
+    notebook["sessions"] = []
+    snippet["statement"] = "SELECT 1, 2, 3"
+
+    resultset = interpreter.execute(notebook, snippet)
+
+    assert resultset["result"]["data"] == [[1, 2, 3]]
+
+
+# To refactor and parameterize
+@pytest.mark.live
+@pytest.mark.parametrize(("dialect"), [("mysql")])
+def test_execute_statement_mysql(dialect):
+    class User:
+        def __init__(self):
+            self.username = "test"
+
+    interpreter = {
+        "options": {"url": "mysql://root:password@127.0.0.1:13306/mysql"},
+        "name": "mysql",
+        "dialect_properties": {},
+    }
+
+    interpreter = SqlAlchemyApi(user=User(), interpreter=interpreter)
+
+    notebook = {}
+    snippet = {}
+    notebook["sessions"] = []
+    snippet["statement"] = "SELECT 1, 2, 3"
+
+    resultset = interpreter.execute(notebook, snippet)
+
+    assert resultset["result"]["data"] == [[1, 2, 3]]

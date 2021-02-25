@@ -41,7 +41,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import api_view
 
-from editor.sql_alchemy import SqlAlchemyApi
+from .sql_alchemy import SqlAlchemyApi
 
 LOG = logging.getLogger(__name__)
 
