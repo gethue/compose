@@ -1,4 +1,4 @@
-name: Live query execution
+name: Live query tests
 
 on:
   push:
