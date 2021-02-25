@@ -10,19 +10,19 @@
 Compose
 -------
 
-[Query Editor component](https://docs.gethue.com/developer/components/scratchpad/).
+[Query Editor component](https://docs.gethue.com/developer/components/scratchpad/)
 
 Compose is the open source module powering the [Hue SQL Assistant](http://gethue.com). It comes as Web service for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/) or building your own [Cloud SQL Editor](https://docs.gethue.com/developer/components/). Contributions are welcome.
 
 # Dev
 
-One time:
+One time
 
     git clone https://github.com/gethue/compose.git; cd compose
     ./install.sh
     pre-commit install
 
-Start API:
+Start API
 
     source python_env/bin/activate
     cd compose
@@ -30,11 +30,11 @@ Start API:
 
 # API
 
-Hello World query:
+Hello World query
 
     curl -u hue:hue https://api.gethue.com/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
 
-Live docs:
+Live docs
 
 * https://api.gethue.com/api/schema/swagger-ui/
 * https://api.gethue.com/api/schema/redoc/
