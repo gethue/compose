@@ -12,7 +12,11 @@ Compose
 
 [Query Editor component](https://docs.gethue.com/developer/components/scratchpad/)
 
-Compose is the open source module powering the [Hue SQL Assistant](http://gethue.com). It comes as Web service for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/) or building your own [Cloud SQL Editor](https://docs.gethue.com/developer/components/). Contributions are welcome.
+Compose is the open source module powering the [Hue SQL Assistant](http://gethue.com). It comes as Web service for querying any [Databases & Data Warehouses](https://docs.gethue.com/administrator/configuration/connectors/) or building your own [Cloud SQL Editor](https://docs.gethue.com/developer/components/). Contributions are welcome and more modules are on the way (Files, Catalog...).
+
+
+<img src="https://cdn.gethue.com/uploads/2020/02/quick-query-component.jpg" width="450">
+
 
 # Dev
 
@@ -27,6 +31,11 @@ Start API
     source python_env/bin/activate
     cd compose
     python manage.py runserver
+
+Checks
+
+    pre-commit run --all-files
+    pytest
 
 # API
 
