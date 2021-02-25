@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from editor.sql_alchemy import SqlAlchemyApi
+
 
 def inc(x):
     return x + 1
@@ -26,3 +28,20 @@ def test_answer():
 
 def test_answer_2():
     assert inc(4) == 5
+
+
+def test_execute_statement():
+    interpreter = {
+        "options": {"url": "sqlite:///../db.sqlite3"},
+        "name": "sqlite",
+        "dialect_properties": {},
+    }
+
+    interpreter = SqlAlchemyApi(None, interpreter=interpreter)
+
+    notebook = {}
+    snippet = {}
+    notebook["sessions"] = []
+    snippet["statement"] = "SELECT 1, 2, 3"
+
+    interpreter.execute(notebook, snippet)
