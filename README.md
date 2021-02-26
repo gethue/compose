@@ -30,7 +30,7 @@ Start API
 
     source python_env/bin/activate
     cd compose
-    python manage.py runserver
+    python compose/manage.py runserver
 
 Checks
 

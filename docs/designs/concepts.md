@@ -123,7 +123,7 @@ After installing it:
 
 Either use the Python compose API or boot the REST API:
 
-    gunicorn core.wsgi --bind 0.0.0.0:8005
+    gunicorn compose.core.wsgi --bind 0.0.0.0:8005
 
 ## API Live Docs
 

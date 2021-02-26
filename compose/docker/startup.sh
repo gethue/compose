@@ -1,5 +1,5 @@
 #!/bin/bash
 
-python3 manage.py migrate --noinput
+python compose/manage.py migrate --noinput
 
-gunicorn core.wsgi --bind 0.0.0.0:8005 --threads 10 --access-logfile '-' --error-logfile '-'
+gunicorn core.wsgi --pythonpath compose --bind 0.0.0.0:8005 --threads 10 --access-logfile '-' --error-logfile '-'

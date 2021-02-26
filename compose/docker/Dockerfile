@@ -9,7 +9,7 @@ RUN apt-get update -y && apt-get install -y \
   # libmysqlclient-dev \
   python3-venv
 
-ADD . /compose
+ADD . /compose/compose
 WORKDIR /compose
 
 RUN pip3 install virtualenv && python3 -m venv python_env
@@ -17,9 +17,9 @@ RUN pip3 install virtualenv && python3 -m venv python_env
 SHELL ["/bin/bash", "-c"]
 RUN source python_env/bin/activate
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r compose/requirements.txt
 
-# Should copy virtual env into new lean image
+# Should copy virtual env into new lean image and same with UI
 
 # COPY core/local_settings.py.tmpl core/local_settings.py
 COPY docker/startup.sh .

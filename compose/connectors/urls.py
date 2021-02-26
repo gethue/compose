@@ -19,6 +19,7 @@ from django.urls import re_path
 
 from . import api
 
+app_name = "connector"
 urlpatterns = [
     re_path(
         r"^types/?$", api.get_types, name="connectors.api.get_connector_types"
