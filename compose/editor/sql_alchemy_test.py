@@ -28,46 +28,22 @@ def test_answer():
     assert inc(3) == 4
 
 
-def test_answer_2():
-    assert inc(4) == 5
-
-
 @pytest.mark.live
-@pytest.mark.parametrize(("dialect"), [("sqlite")])
-def test_execute_statement(dialect):
+@pytest.mark.parametrize(
+    ("dialect", "url"),
+    [
+        ("sqllite", "sqlite:///../db.sqlite3"),
+        ("mysql", "mysql://root:password@127.0.0.1:13306/mysql"),
+    ],
+)
+def test_execute_statement(dialect, url):
     class User:
         def __init__(self):
             self.username = "test"
 
     interpreter = {
-        "options": {"url": "sqlite:///../db.sqlite3"},
-        "name": "sqlite",
-        "dialect_properties": {},
-    }
-
-    interpreter = SqlAlchemyApi(user=User(), interpreter=interpreter)
-
-    notebook = {}
-    snippet = {}
-    notebook["sessions"] = []
-    snippet["statement"] = "SELECT 1, 2, 3"
-
-    resultset = interpreter.execute(notebook, snippet)
-
-    assert resultset["result"]["data"] == [[1, 2, 3]]
-
-
-# To refactor and parameterize
-@pytest.mark.live
-@pytest.mark.parametrize(("dialect"), [("mysql")])
-def test_execute_statement_mysql(dialect):
-    class User:
-        def __init__(self):
-            self.username = "test"
-
-    interpreter = {
-        "options": {"url": "mysql://root:password@127.0.0.1:13306/mysql"},
-        "name": "mysql",
+        "options": {"url": url},
+        "name": dialect,
         "dialect_properties": {},
     }
 
