@@ -1,0 +1,8 @@
+build
+logs
+node_modules
+.git
+.vscode
+python_env
+dist
+**/__pycache__

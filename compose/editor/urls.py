@@ -20,7 +20,8 @@ from django.urls import re_path
 from . import api
 
 urlpatterns = [
-    re_path(r"^query/(?P<dialect>.+)/?$", api.query, name="execute"),
+    re_path(r"^query/(?P<dialect>.+)/?$", api.query, name="query"),
+    re_path(r"^execute/(?P<dialect>.+)/?$", api.query, name="execute"),
     re_path(r"^autocomplete/?$", api.autocomplete, name="autocomplete_databases"),
     re_path(
         r"^autocomplete/(?P<database>[^/?]*)/?$",

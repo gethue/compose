@@ -15,19 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-WSGI config for project.
+from django.http import JsonResponse
 
-It exposes the WSGI callable as a module-level variable named ``application``.
 
-For more information on this file, see
-https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/
-"""
+def get_types(request):
+    return JsonResponse({"connectors": [], "categories": []})
 
-import os
 
-from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "compose.core.settings")
-
-application = get_wsgi_application()
+def get_instances(request):
+    return JsonResponse({"connectors": []})
