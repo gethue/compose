@@ -32,7 +32,7 @@ def test_answer():
 @pytest.mark.parametrize(
     ("dialect", "url"),
     [
-        ("sqllite", "sqlite:///../db.sqlite3"),
+        ("sqllite", "sqlite:///../db-demo.sqlite3"),
         ("mysql", "mysql://root:password@127.0.0.1:13306/mysql"),
     ],
 )

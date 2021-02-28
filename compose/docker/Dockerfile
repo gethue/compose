@@ -1,6 +1,7 @@
 FROM python:3.8.5
 LABEL description="Compose API - gethue.com"
 
+# Use virtual env again for lean image?
 # Delete cache?
 # RUN apt-get update -y && apt-get install -y \
 #   python3-pip \
