@@ -45,7 +45,7 @@ After installing it:
 
 Either use the Python compose API or boot the REST API:
 
-    gunicorn compose.core.wsgi --bind 0.0.0.0:8005
+    gunicorn compose.conf.wsgi --bind 0.0.0.0:8005
 
 
 # API

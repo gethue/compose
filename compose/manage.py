@@ -27,7 +27,7 @@ def main():
     # As we run manage.py from one directory up
     sys.path.append(str(Path(__file__).parent.parent))
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "conf.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
