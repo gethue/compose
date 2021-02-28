@@ -35,10 +35,10 @@ urlpatterns = [
 # https://www.django-rest-framework.org/api-guide/versioning/#urlpathversioning
 
 urlpatterns += [
-    path("v1/editor/", include("editor.urls")),
+    path("v1/editor/", include("compose.editor.urls")),
 ]
 
-urlpatterns += [path("v1/connectors/", include("connectors.urls"))]
+urlpatterns += [path("v1/connectors/", include("compose.connectors.urls"))]
 
 urlpatterns += [
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

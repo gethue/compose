@@ -30,7 +30,7 @@ Start API
 
     source python_env/bin/activate
     cd compose
-    python compose/manage.py runserver
+    python compose/manage.py runserver 0.0.0.0:8005
 
 Checks
 
@@ -51,3 +51,8 @@ Live docs
 Docker
 
     docker run -it -p 8005:8005 gethue/compose:latest
+
+Pypi
+
+    pip install gethue
+    gunicorn compose.core.wsgi --bind 0.0.0.0:8005

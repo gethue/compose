@@ -19,10 +19,14 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from pathlib import Path
 
 
 def main():
     """Run administrative tasks."""
+    # As we run manage.py from one directory up
+    sys.path.append(str(Path(__file__).parent.parent))
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
     try:
         from django.core.management import execute_from_command_line
