@@ -55,4 +55,6 @@ Docker
 Pypi
 
     pip install gethue
+
+    compose migrate
     gunicorn compose.conf.wsgi --bind 0.0.0.0:8005
