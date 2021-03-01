@@ -18,7 +18,7 @@ Compose is the open source module powering the [Hue SQL Assistant](http://gethue
 <img src="https://cdn.gethue.com/uploads/2020/02/quick-query-component.jpg" width="450">
 
 
-# Use
+# Start
 
 Hello World query
 
@@ -33,6 +33,7 @@ Pypi
     pip install gethue
 
     compose migrate
+    compose createsuperuser
     compose start
 
 Live docs
@@ -46,7 +47,7 @@ Live docs
 One time
 
     git clone https://github.com/gethue/compose.git; cd compose
-    ./install.sh
+    ./install.sh  # If you want a Python virtual-env
     pre-commit install
 
 Start API
