@@ -15,8 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.apps import AppConfig
+import os
+
+from django.core.management.base import BaseCommand
 
 
-class EditorConfig(AppConfig):
-    name = "compose.editor"
+class Command(BaseCommand):
+    help = "Start the Compose production server"
+
+    def handle(self, *args, **options):
+        os.system("gunicorn compose.conf.wsgi --bind 0.0.0.0:8005")

@@ -19,4 +19,4 @@ from django.apps import AppConfig
 
 
 class ConnectorsConfig(AppConfig):
-    name = "connectors"
+    name = "compose.connectors"

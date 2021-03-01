@@ -18,6 +18,29 @@ Compose is the open source module powering the [Hue SQL Assistant](http://gethue
 <img src="https://cdn.gethue.com/uploads/2020/02/quick-query-component.jpg" width="450">
 
 
+# Use
+
+Hello World query
+
+    curl -u hue:hue https://localhost:8005/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
+
+Docker
+
+    docker run -it -p 8005:8005 gethue/compose:latest
+
+Pypi
+
+    pip install gethue
+
+    compose migrate
+    compose start
+
+Live docs
+
+* https://api.gethue.com/api/schema/swagger-ui/
+* https://api.gethue.com/api/schema/redoc/
+
+
 # Dev
 
 One time
@@ -36,25 +59,3 @@ Checks
 
     pre-commit run --all-files
     pytest
-
-# API
-
-Hello World query
-
-    curl -u hue:hue https://api.gethue.com/v1/editor/query/sqlite --data 'snippet={"statement":"SELECT 1000, 1001"}'
-
-Live docs
-
-* https://api.gethue.com/api/schema/swagger-ui/
-* https://api.gethue.com/api/schema/redoc/
-
-Docker
-
-    docker run -it -p 8005:8005 gethue/compose:latest
-
-Pypi
-
-    pip install gethue
-
-    compose migrate
-    gunicorn compose.conf.wsgi --bind 0.0.0.0:8005

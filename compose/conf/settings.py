@@ -52,7 +52,8 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    # 'editor.apps.EditorConfig',
+    "compose.editor.apps.EditorConfig",
+    "compose.connectors.apps.ConnectorsConfig",
     # "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
