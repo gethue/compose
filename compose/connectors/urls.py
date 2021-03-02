@@ -20,14 +20,13 @@ from django.urls import re_path
 from . import api
 
 app_name = "connector"
+
 urlpatterns = [
-    re_path(
-        r"^types/?$", api.get_types, name="connectors.api.get_connector_types"
-    ),  # Should/How to name?
+    re_path(r"^types/?$", api.get_types, name="types"),
     re_path(
         r"^instances/?$",
         api.get_instances,
-        name="connectors.api.get_connectors_instances",
+        name="instances",
     ),
     # re_path(r'^api/instance/new/(?P<dialect>[\w\-]+)/(?P<interface>[\w\-]+)$', api.new_connector, name='connectors.api.new_connector'),
     # re_path(r'^api/instance/get/(?P<id>\d+)$', api.get_connector, name='connectors.api.get_connector'),

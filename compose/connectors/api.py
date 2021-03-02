@@ -15,12 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
+@api_view(["POST"])
 def get_types(request):
-    return JsonResponse({"connectors": [], "categories": []})
+    return Response({"connectors": [], "categories": []})
 
 
+@api_view(["POST"])
 def get_instances(request):
-    return JsonResponse({"connectors": []})
+    return Response({"connectors": []})

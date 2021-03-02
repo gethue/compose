@@ -23,9 +23,9 @@ app_name = "editor"
 
 urlpatterns = [
     re_path(r"^execute/(?P<dialect>.+)/?$", api.query, name="execute"),
-    # check_status
-    # fetch_result_data
-    # get_logs
+    re_path(r"^check_status/?$", api.query, name="check_status"),
+    re_path(r"^fetch_result_data/?$", api.query, name="fetch_result_data"),
+    re_path(r"^get_logs/?$", api.query, name="get_logs"),
     re_path(r"^autocomplete/?$", api.autocomplete, name="autocomplete_databases"),
     re_path(
         r"^autocomplete/(?P<database>[^/?]*)/?$",

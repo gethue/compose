@@ -21,28 +21,34 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.versioning import (
+    AcceptHeaderVersioning,
+    NamespaceVersioning,
+    URLPathVersioning,
+)
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 
 urlpatterns = [
-    path("v1/iam/get/auth-token/", obtain_jwt_token),
-    path("v1/iam/verify/auth-token/", verify_jwt_token),
-    # path("api-auth/", include("rest_framework.urls", namespace="rest_framework")), # Good to delete if live docs auth works
-    path("v1/iam/auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("iam/v1/get/auth-token/", obtain_jwt_token),
+    path("iam/v1/verify/auth-token/", verify_jwt_token),
+    path("iam/v1/auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
 
-
-# namespace for version?
-# https://www.django-rest-framework.org/api-guide/versioning/#urlpathversioning
-
 urlpatterns += [
-    path("v1/editor/", include("compose.editor.urls")),
+    path("editor/v1/", include("compose.editor.urls", namespace="editor")),
     path("notebook/api/", include("compose.editor.urls_hue4", namespace="hue4")),
 ]
 
-urlpatterns += [path("v1/connectors/", include("compose.connectors.urls"))]
+urlpatterns += [
+    path("connectors/v1/", include("compose.connectors.urls", namespace="connectors"))
+]
 
 urlpatterns += [
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/schema/",
+        SpectacularAPIView.as_view(),
+        name="schema",
+    ),
     path(
         "api/schema/swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),
