@@ -1,0 +1,48 @@
+# OS X nonsense
+.DS_Store
+._*
+
+# Python compiled files
+*.pyc
+*.pyo
+**/__pycache__
+
+# vim tmp files
+.*.swp
+.*.swo
+
+# emacs backup files
+.*~
+
+# Build directory and environment
+build
+python_env
+logs
+
+# Generated configuration
+compose/conf/local_settings.py
+compose/db.sqlite3
+
+# Package build files
+*.egg-info/
+dist/
+
+# Coverage product
+/.coverage
+/coverage.xml
+/coverage
+.pytest_cache/
+
+# Intellij project files
+.idea/
+*.iml
+
+# Database of running server
+desktop/desktop.db
+
+# Node Modules
+node_modules/
+webpack-stats*.json
+
+# VSCode settings
+.vscode
