@@ -36,6 +36,7 @@ urlpatterns = [
 
 urlpatterns += [
     path("v1/editor/", include("compose.editor.urls")),
+    path("notebook/api/", include("compose.editor.urls_hue4", namespace="hue4")),
 ]
 
 urlpatterns += [path("v1/connectors/", include("compose.connectors.urls"))]
