@@ -1,0 +1,11 @@
+pull_request_rules:
+  - name: automatic merge for master when CI passes and 1 review and not manual merge tag
+    conditions:
+      - "#approved-reviews-by>=0"
+      - check-success=Python CI / build (3.6)
+      - check-success=Live query tests / execute-mysql-queries (3.8)
+      - base=master
+      - label!=manual
+    actions:
+      merge:
+        method: merge
