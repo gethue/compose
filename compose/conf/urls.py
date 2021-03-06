@@ -21,11 +21,6 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from rest_framework.versioning import (
-    AcceptHeaderVersioning,
-    NamespaceVersioning,
-    URLPathVersioning,
-)
 from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 
 urlpatterns = [
