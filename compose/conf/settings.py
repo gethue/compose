@@ -31,7 +31,8 @@ import datetime
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+RELATIVE_DIR = Path(__file__).resolve().parent
+BASE_DIR = RELATIVE_DIR.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -188,3 +189,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+
+# Parameterization
+try:
+    pass
+except ImportError:
+    from shutil import copyfile
+
+    copyfile(
+        RELATIVE_DIR / "local_settings_template.py", RELATIVE_DIR / "local_settings.py"
+    )

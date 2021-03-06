@@ -54,7 +54,11 @@ Start API
 
     source python_env/bin/activate
     cd compose
-    python compose/manage.py runserver 0.0.0.0:8005
+    python3 compose/manage.py runserver 0.0.0.0:8005
+
+Config
+
+    compose/conf/local_settings.py
 
 Checks
 
