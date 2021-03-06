@@ -49,6 +49,8 @@ ALLOWED_HOSTS = [
     "api.gethue.com",
 ]
 
+ATOMIC_REQUESTS = True
+
 # Application definition
 
 INSTALLED_APPS = [
