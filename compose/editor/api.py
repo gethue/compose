@@ -38,7 +38,7 @@ import logging
 import opentracing
 from django.http import JsonResponse
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework.decorators import api_view
 
 from .sql_alchemy import SqlAlchemyApi
@@ -47,24 +47,11 @@ LOG = logging.getLogger(__name__)
 
 
 @extend_schema(
-    # Json https://github.com/tfranzel/drf-spectacular/issues/279
-    # Should define properly json POST attributes
-    parameters=[
-        OpenApiParameter(
-            name="snippet",
-            type={
-                "type": "json",
-                "minItems": 4,
-                "maxItems": 6,
-                "items": {"type": "number"},
-            },
-            location=OpenApiParameter.QUERY,
-            required=False,
-            style="form",
-            explode=False,
-        )
+    request=OpenApiTypes.STR,
+    responses=OpenApiTypes.STR,
+    examples=[
+        OpenApiExample(name="SELECT query", value='{"statement":"SELECT 1, 2, 3"}')
     ],
-    responses=OpenApiTypes.OBJECT,
 )
 @api_view(["POST"])
 def query(request, dialect=None):
@@ -107,14 +94,16 @@ def _execute_notebook(request, notebook, snippet):
     return response
 
 
+# @api_view(["POST"])
 def execute(request, dialect=None):
     notebook = json.loads(request.POST.get("notebook", "{}"))
     snippet = json.loads(request.POST.get("snippet", "{}"))
 
+    statement = request.data.get("statement") or "SELECT 1, 2, 3"
+
     # Added
     notebook["sessions"] = []
-    if not snippet.get("statement"):
-        snippet["statement"] = "SELECT 1, 2, 3"
+    snippet["statement"] = statement
 
     if dialect:
         notebook["dialect"] = dialect
