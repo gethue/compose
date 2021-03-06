@@ -19,4 +19,4 @@ fi
 source python_env/bin/activate
 
 cd compose
-pip install
+pip install -r requirements.txt
