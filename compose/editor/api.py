@@ -47,6 +47,7 @@ LOG = logging.getLogger(__name__)
 
 
 @extend_schema(
+    description="Minimal API for submitting an SQL statement synchronously",
     request=OpenApiTypes.STR,
     responses=OpenApiTypes.STR,
     examples=[
@@ -61,6 +62,23 @@ def query(request, dialect=None):
     return data
 
 
+@extend_schema(
+    description="Submitting an SQL statement asynchronously",
+    request=OpenApiTypes.STR,
+    responses=OpenApiTypes.STR,
+)
+@api_view(["POST"])
+def execute(request, dialect=None):
+    json.loads(request.POST.get("notebook", "{}"))
+    json.loads(request.POST.get("snippet", "{}"))
+
+    statement = request.data.get("statement") or "SELECT 1, 2, 3"
+
+    response = _execute(request.user, dialect, statement)
+
+    return JsonResponse(response)
+
+
 @api_view(["POST"])
 def autocomplete(
     request, server=None, database=None, table=None, column=None, nested=None
@@ -71,15 +89,36 @@ def autocomplete(
     return data
 
 
-def _execute_notebook(request, notebook, snippet):
+def _execute(user, dialect, statement):
+    notebook = {}
+    snippet = {}
+
+    # Added
+    notebook["sessions"] = []
+    snippet["statement"] = statement
+
+    if dialect:
+        notebook["dialect"] = dialect
+
+    with opentracing.tracer.start_span("notebook-execute") as span:
+        span.set_tag("user-id", user.username)
+
+        response = _execute_notebook(user, notebook, snippet)
+
+        span.set_tag("query-id", response.get("handle", {}).get("guid"))
+
+        return response
+
+
+def _execute_notebook(user, notebook, snippet):
     response = {"status": -1}
 
     interpreter = {
-        "options": {"url": "sqlite:///../db.sqlite3"},
+        "options": {"url": "sqlite:///../db-demo.sqlite3"},
         "name": "sqlite",
         "dialect_properties": {},
     }
-    interpreter = SqlAlchemyApi(request.user, interpreter=interpreter)
+    interpreter = SqlAlchemyApi(user, interpreter=interpreter)
     # interpreter = get_api(request, snippet)
 
     with opentracing.tracer.start_span("interpreter") as span:
@@ -92,27 +131,3 @@ def _execute_notebook(request, notebook, snippet):
     response["status"] = 0
 
     return response
-
-
-# @api_view(["POST"])
-def execute(request, dialect=None):
-    notebook = json.loads(request.POST.get("notebook", "{}"))
-    snippet = json.loads(request.POST.get("snippet", "{}"))
-
-    statement = request.data.get("statement") or "SELECT 1, 2, 3"
-
-    # Added
-    notebook["sessions"] = []
-    snippet["statement"] = statement
-
-    if dialect:
-        notebook["dialect"] = dialect
-
-    with opentracing.tracer.start_span("notebook-execute") as span:
-        span.set_tag("user-id", request.user.username)
-
-        response = _execute_notebook(request, notebook, snippet)
-
-        span.set_tag("query-id", response.get("handle", {}).get("guid"))
-
-    return JsonResponse(response)
