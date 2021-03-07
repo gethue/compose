@@ -9,6 +9,7 @@ WORKDIR /app
 # Should update OS packages
 
 RUN python -m pip install --upgrade pip
+# Should use a virtual env
 #&& pip install virtualenv && python -m venv python_env
 
 # SHELL ["/bin/bash", "-c"]
@@ -16,11 +17,13 @@ RUN python -m pip install --upgrade pip
 
 RUN python -m pip install /build && rm -rf /build
 
-# COPY compose/conf/local_settings.py.tmpl compose/conf/local_settings.py
-COPY compose/docker/startup.sh .
-RUN mkdir conf
+# Should have a more elegant conf dir
+COPY compose/docker/local_settings.py /usr/local/lib/python3.8/site-packages/compose/conf/local_settings.py
+# COPY compose/docker/local_settings.py compose/conf/local_settings.py
 
-# Should chown and use compose user
+COPY compose/docker/startup.sh .
+
+# Should chown and use a compose user
 
 # Should copy virtual env into new lean image and same with UI
 
