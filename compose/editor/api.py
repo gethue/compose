@@ -51,15 +51,19 @@ LOG = logging.getLogger(__name__)
     request=OpenApiTypes.STR,
     responses=OpenApiTypes.STR,
     examples=[
-        OpenApiExample(name="SELECT query", value='{"statement":"SELECT 1, 2, 3"}')
+        OpenApiExample(name="SELECT 1, 2, 3", value='{"statement":"SELECT 1, 2, 3"}')
     ],
 )
 @api_view(["POST"])
 def query(request, dialect=None):
     print(request.data)
     print(request.POST)
-    data = execute(request)
-    return data
+
+    statement = request.data.get("statement") or "SELECT 1, 2, 3"
+
+    data = _execute(user=request.user, dialect=dialect, statement=statement)
+
+    return JsonResponse(data)
 
 
 @extend_schema(
@@ -114,7 +118,7 @@ def _execute_notebook(user, notebook, snippet):
     response = {"status": -1}
 
     interpreter = {
-        "options": {"url": "sqlite:///../db-demo.sqlite3"},
+        "options": {"url": "sqlite:///db-demo.sqlite3"},
         "name": "sqlite",
         "dialect_properties": {},
     }

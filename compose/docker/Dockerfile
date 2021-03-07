@@ -1,18 +1,26 @@
 FROM python:3.8.5
 LABEL description="Compose API - gethue.com"
 
-ADD . /app
+ADD . /build
+
+RUN mkdir /app
 WORKDIR /app
 
-RUN python -m pip install --upgrade pip && pip install virtualenv && python -m venv python_env
+# Should update OS packages
 
-SHELL ["/bin/bash", "-c"]
-RUN source python_env/bin/activate
+RUN python -m pip install --upgrade pip
+#&& pip install virtualenv && python -m venv python_env
 
-RUN python -m pip install /app
+# SHELL ["/bin/bash", "-c"]
+# RUN source python_env/bin/activate
 
-# COPY core/local_settings.py.tmpl core/local_settings.py
+RUN python -m pip install /build && rm -rf /build
+
+# COPY compose/conf/local_settings.py.tmpl compose/conf/local_settings.py
 COPY compose/docker/startup.sh .
+RUN mkdir conf
+
+# Should chown and use compose user
 
 # Should copy virtual env into new lean image and same with UI
 
