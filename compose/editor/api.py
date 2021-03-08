@@ -93,6 +93,21 @@ def autocomplete(
     return data
 
 
+@api_view(["POST"])
+def check_status():
+    pass
+
+
+@api_view(["POST"])
+def fetch_result_data():
+    pass
+
+
+@api_view(["POST"])
+def get_logs():
+    pass
+
+
 def _execute(user, dialect, statement):
     notebook = {}
     snippet = {}
