@@ -48,11 +48,8 @@ LOG = logging.getLogger(__name__)
 
 @extend_schema(
     description="Minimal API for submitting an SQL statement synchronously",
-    request=OpenApiTypes.STR,
+    request={"application/json": OpenApiTypes.OBJECT},
     responses=OpenApiTypes.STR,
-    examples=[
-        OpenApiExample(name="SELECT 1, 2, 3", value='{"statement":"SELECT 1, 2, 3"}')
-    ],
 )
 @api_view(["POST"])
 def query(request, dialect=None):
@@ -150,3 +147,59 @@ def _execute_notebook(user, notebook, snippet):
     response["status"] = 0
 
     return response
+
+
+# API specs
+# Operation: https://swagger.io/specification/#operation-object
+# Some possibilities, obviously going more manual if we don't have models. Can be case per case depending on API popularity.
+# - Manual text docs like on current API docs
+# - Reuse/Create a DRF serializer
+# - Manual request to text and example object
+# - Manual request body (and response)
+@extend_schema(
+    description="Minimal API for submitting an SQL statement synchronously",
+    request={"application/json": OpenApiTypes.OBJECT},
+    responses=OpenApiTypes.STR,
+    examples=[
+        OpenApiExample(
+            name="SELECT 1, 2, 3",
+            value={"statement": "SELECT 1, 2, 3"},
+        )
+    ],
+    # Full override, all manual
+    # https://github.com/tfranzel/drf-spectacular/issues/279
+    # https://github.com/tfranzel/drf-spectacular/blob/6f12e8d9310ca2aaa833a1167d0d5f7795e2d635/tests/test_extend_schema.py#L160-L186
+    # Note: seems to lose Parameters when set?
+    operation={
+        "operationId": "manual_endpoint",
+        "tags": ["editor"],
+        # https://swagger.io/specification/#request-body-object
+        "requestBody": {
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                    },
+                    "examples": {
+                        "1, 2, 3": {
+                            "summary": "List of numbers",
+                            "value": ["1", "2", "3"],
+                        },
+                    },
+                    # "schema": {
+                    #     "type": "object",
+                    #     "properties": {"statement": {"type": "string"}},
+                    #     "example": {"statement": "SELECT 1, 2, 3"}
+                    # },
+                }
+            },
+        },
+    },
+)
+@api_view(["POST"])
+def hello(request, message=None):
+    print(request.data)
+    print(request.POST)
+
+    return JsonResponse({"data": request.data, "message": message})

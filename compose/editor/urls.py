@@ -48,4 +48,5 @@ urlpatterns = [
         api.autocomplete,
         name="autocomplete_nested",
     ),
+    re_path(r"^hello/?$", api.hello, name="hello"),
 ]
