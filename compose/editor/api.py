@@ -32,16 +32,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import logging
 
-import opentracing
 from django.http import JsonResponse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework.decorators import api_view
 
-from .sql_alchemy import SqlAlchemyApi
+from .executors.executor import Executor, _execute
 
 LOG = logging.getLogger(__name__)
 
@@ -57,8 +55,9 @@ def query(request, dialect=None):
     print(request.POST)
 
     statement = request.data.get("statement") or "SELECT 1, 2, 3"
+    # dialect=dialect,
 
-    data = _execute(user=request.user, dialect=dialect, statement=statement)
+    data = Executor(username=request.user).execute(statement=statement)
 
     return JsonResponse(data)
 
@@ -70,9 +69,6 @@ def query(request, dialect=None):
 )
 @api_view(["POST"])
 def execute(request, dialect=None):
-    json.loads(request.POST.get("notebook", "{}"))
-    json.loads(request.POST.get("snippet", "{}"))
-
     statement = request.data.get("statement") or "SELECT 1, 2, 3"
 
     response = _execute(request.user, dialect, statement)
@@ -103,50 +99,6 @@ def fetch_result_data():
 @api_view(["POST"])
 def get_logs():
     pass
-
-
-def _execute(user, dialect, statement):
-    notebook = {}
-    snippet = {}
-
-    # Added
-    notebook["sessions"] = []
-    snippet["statement"] = statement
-
-    if dialect:
-        notebook["dialect"] = dialect
-
-    with opentracing.tracer.start_span("notebook-execute") as span:
-        span.set_tag("user-id", user.username)
-
-        response = _execute_notebook(user, notebook, snippet)
-
-        span.set_tag("query-id", response.get("handle", {}).get("guid"))
-
-        return response
-
-
-def _execute_notebook(user, notebook, snippet):
-    response = {"status": -1}
-
-    interpreter = {
-        "options": {"url": "sqlite:///db-demo.sqlite3"},
-        "name": "sqlite",
-        "dialect_properties": {},
-    }
-    interpreter = SqlAlchemyApi(user, interpreter=interpreter)
-    # interpreter = get_api(request, snippet)
-
-    with opentracing.tracer.start_span("interpreter") as span:
-        # interpreter.execute needs the sessions, but we don't want to persist them
-        # pre_execute_sessions = notebook['sessions']
-        # notebook['sessions'] = sessions
-        response["handle"] = interpreter.execute(notebook, snippet)
-        # notebook['sessions'] = pre_execute_sessions
-
-    response["status"] = 0
-
-    return response
 
 
 # API specs

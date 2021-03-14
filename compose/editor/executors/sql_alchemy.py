@@ -41,40 +41,14 @@ from string import Template
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
+from compose.editor.exceptions import AuthenticationRequired, QueryError, QueryExpired
+
 ENGINES = {}
 CONNECTIONS = {}
 ENGINE_KEY = "%(username)s-%(connector_name)s"
 URL_PATTERN = "(?P<driver_name>.+?://)(?P<host>[^:/ ]+):(?P<port>[0-9]*).*"
 
 LOG = logging.getLogger(__name__)
-
-
-class SessionExpired(Exception):
-    pass
-
-
-class QueryExpired(Exception):
-    def __init__(self, message=None):
-        super(QueryExpired, self).__init__()
-        self.message = message
-
-
-class AuthenticationRequired(Exception):
-    def __init__(self, message=None):
-        super(AuthenticationRequired, self).__init__()
-        self.message = message
-
-    def __str__(self):
-        return "AuthenticationRequired: %s" % self.message
-
-
-class OperationTimeout(Exception):
-    def __str__(self):
-        return "OperationTimeout"
-
-
-class OperationNotSupported(Exception):
-    pass
 
 
 def query_error_handler(func):
@@ -105,10 +79,10 @@ def query_error_handler(func):
     return decorator
 
 
-class SqlAlchemyApi:
-    def __init__(self, user, interpreter):
+class SqlAlchemyConnector:
+    def __init__(self, username, interpreter):
         # super(SqlAlchemyApi, self).__init__(user=user, interpreter=interpreter)
-        self.user = user
+        self.username = username
         self.interpreter = interpreter
 
         self.options = interpreter["options"]
@@ -127,7 +101,7 @@ class SqlAlchemyApi:
 
     def _get_engine_key(self):
         return ENGINE_KEY % {
-            "username": self.user.username,
+            "username": self.username,
             "connector_name": self.interpreter["name"],
         }
 
@@ -141,7 +115,7 @@ class SqlAlchemyApi:
 
     def _create_engine(self):
         if "${" in self.options["url"]:  # URL parameters substitution
-            vars = {"USER": self.user.username}
+            vars = {"USER": self.username}
 
             if "${PASSWORD}" in self.options["url"]:
                 auth_provided = False
@@ -183,7 +157,7 @@ class SqlAlchemyApi:
             url = url.replace(
                 driver_name,
                 "%(driver_name)s%(username)s@"
-                % {"driver_name": driver_name, "username": self.user.username},
+                % {"driver_name": driver_name, "username": self.username},
             )
 
         if self.options.get("credentials_json"):
