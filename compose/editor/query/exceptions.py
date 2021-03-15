@@ -15,6 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from django.utils.encoding import smart_text
+
+
+class QueryError(Exception):
+    def __init__(self, message, handle=None):
+        super(QueryError, self).__init__(message)
+        self.message = message or _("No error message, please check the logs.")
+        self.handle = handle
+        self.extra = {}
+
+    def __unicode__(self):
+        return smart_text(self.message)
+
 
 class SessionExpired(Exception):
     pass

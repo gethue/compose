@@ -41,7 +41,11 @@ from string import Template
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
-from compose.editor.exceptions import AuthenticationRequired, QueryError, QueryExpired
+from compose.editor.query.exceptions import (
+    AuthenticationRequired,
+    QueryError,
+    QueryExpired,
+)
 
 ENGINES = {}
 CONNECTIONS = {}
@@ -79,7 +83,11 @@ def query_error_handler(func):
     return decorator
 
 
-class SqlAlchemyConnector:
+# Api vs Client
+class SqlAlchemyInterface:
+
+    # engine
+    #
     def __init__(self, username, interpreter):
         # super(SqlAlchemyApi, self).__init__(user=user, interpreter=interpreter)
         self.username = username
@@ -99,7 +107,7 @@ class SqlAlchemyConnector:
                 else "`"
             )
 
-    def _get_engine_key(self):
+    def _get_engine_key(self):  # --> to Executor?
         return ENGINE_KEY % {
             "username": self.username,
             "connector_name": self.interpreter["name"],
@@ -138,6 +146,7 @@ class SqlAlchemyConnector:
         else:
             url = self.options["url"]
 
+        # --> to move to py Hooks in connector types
         if url.startswith("awsathena+rest://"):
             url = url.replace(url[17:37], urllib_quote_plus(url[17:37]))
             url = url.replace(url[38:50], urllib_quote_plus(url[38:50]))
@@ -203,24 +212,24 @@ class SqlAlchemyConnector:
         return connection
 
     # @query_error_handler
-    def execute(self, notebook, snippet):
+    def execute(self, query):
         guid = uuid.uuid4().hex
         is_async = False
 
-        session = self._get_session(notebook, snippet)
-        if session is not None:
-            self.options["session"] = session
+        # session = self._get_session(notebook, snippet)
+        # if session is not None:
+        #     self.options["session"] = session
 
         engine = self._get_engine()
         connection = self._create_connection(engine)
-        statement = snippet["statement"]
+        statement = query["statement"]
 
         if self.interpreter["dialect_properties"].get("trim_statement_semicolon", True):
             statement = statement.strip().rstrip(";")
 
         if self.interpreter["dialect_properties"].get(
             "has_use_statement"
-        ) and snippet.get("database"):
+        ) and query.get("database"):
             connection.execute(
                 "USE %(sql_identifier_quote)s%(database)s%(sql_identifier_quote)s"
                 % {
@@ -232,6 +241,7 @@ class SqlAlchemyConnector:
             )
 
         result = connection.execute(statement)
+        print(result)
 
         cache = {
             "connection": connection,
@@ -267,3 +277,6 @@ class SqlAlchemyConnector:
                 "type": "table",
             },
         }
+
+    def check_status(self, query_id):
+        return {"status": "running"}

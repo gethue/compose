@@ -22,7 +22,7 @@ Compose is the open source module powering the [Hue SQL Assistant](http://gethue
 
 Hello World query
 
-    curl -u hue:hue -X POST http://localhost:8005/editor/v1/query/sqlite --data 'statement=SELECT 1000, 1001'
+    curl -u hue:hue -X POST http://localhost:8005/editor/v1/query/sqlite --data 'statement=SELECT 100, 200'
 
 Docker
 

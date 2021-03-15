@@ -17,3 +17,4 @@ addopts = '-m "not live"'
 markers = [
     "live: integration tests executing queries to a live database",
 ]
+python_files = '*_tests.py'

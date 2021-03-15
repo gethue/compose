@@ -17,15 +17,22 @@
 
 import pytest
 
-from compose.editor.sql_alchemy import SqlAlchemyApi
+from compose.editor.query.sqlalchemy_api import SqlAlchemyInterface
 
 
-def inc(x):
-    return x + 1
+@pytest.mark.django_db
+def test_query():
+    interpreter = {
+        "options": {"url": "sqlite://"},
+        "name": "sqlite",
+        "dialect_properties": {},
+    }
+    connector = SqlAlchemyInterface(username="test", interpreter=interpreter)
+    query = {"statement": "SELECT 1, 2, 3"}
 
+    data = connector.execute(query=query)
 
-def test_answer():
-    assert inc(3) == 4
+    assert data["result"]["data"] == [[1, 2, 3]]
 
 
 @pytest.mark.live
@@ -47,7 +54,7 @@ def test_execute_statement(dialect, url):
         "dialect_properties": {},
     }
 
-    interpreter = SqlAlchemyApi(user=User(), interpreter=interpreter)
+    interpreter = SqlAlchemyInterface(user=User(), interpreter=interpreter)
 
     notebook = {}
     snippet = {}

@@ -39,7 +39,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework.decorators import api_view
 
-from .executors.executor import Executor, _execute
+from .query.engines import Executor
 
 LOG = logging.getLogger(__name__)
 
@@ -55,9 +55,15 @@ def query(request, dialect=None):
     print(request.POST)
 
     statement = request.data.get("statement") or "SELECT 1, 2, 3"
-    # dialect=dialect,
+
+    # connector = {}
+    # query = Query(statement...)
 
     data = Executor(username=request.user).execute(statement=statement)
+    # qhandle = Executor(dialect='dialect').execute(statement=statement)
+    # qhandle = Executor(connector).execute(query)
+
+    # data = Executor(connector).query(query)
 
     return JsonResponse(data)
 
@@ -69,9 +75,9 @@ def query(request, dialect=None):
 )
 @api_view(["POST"])
 def execute(request, dialect=None):
-    statement = request.data.get("statement") or "SELECT 1, 2, 3"
+    request.data.get("statement") or "SELECT 1, 2, 3"
 
-    response = _execute(request.user, dialect, statement)
+    response = {"uuid": "abc", "handle": {}}
 
     return JsonResponse(response)
 
@@ -87,17 +93,22 @@ def autocomplete(
 
 
 @api_view(["POST"])
-def check_status():
+def check_status(request):
+    query_id = request.data.get("query_id")
+    # operation_id = request.POST.get('operationId')
+
+    data = Executor(username=request.user).check_status(query_id=query_id)
+
+    return JsonResponse(data)
+
+
+@api_view(["POST"])
+def fetch_result_data(request):
     pass
 
 
 @api_view(["POST"])
-def fetch_result_data():
-    pass
-
-
-@api_view(["POST"])
-def get_logs():
+def get_logs(request):
     pass
 
 
