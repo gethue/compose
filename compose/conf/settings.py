@@ -45,6 +45,7 @@ SECRET_KEY = "zj^!-wlzr8y^7%9$+yyxnxeh%^8p9(vf-vrvsi^1f1ylrk05sv"
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "0.0.0.0",
     "127.0.0.1",
     "localhost",
     "api.gethue.com",
@@ -55,6 +56,7 @@ ATOMIC_REQUESTS = True
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     "compose.editor.apps.EditorConfig",
     "compose.connectors.apps.ConnectorsConfig",
     # "django.contrib.admin",
@@ -72,6 +74,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     # 'django.middleware.csrf.CsrfViewMiddleware',
@@ -100,6 +103,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "conf.wsgi.application"
 
+STATIC_ROOT = "compose-ui"
+
+# Forever-cacheable files and compression support
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_INDEX_FILE = True
 
 TEST_RUNNER = "compose.conf.runner.PytestTestRunner"
 
@@ -196,8 +204,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = "/static/"
-
+STATIC_URL = "/"
 
 # Parameterization
 try:
