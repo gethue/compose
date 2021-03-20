@@ -101,6 +101,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "conf.wsgi.application"
 
 
+TEST_RUNNER = "compose.conf.runner.PytestTestRunner"
+
+
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 

@@ -63,4 +63,4 @@ Config
 Checks
 
     pre-commit run --all-files
-    pytest
+    python compose/manage.py test
