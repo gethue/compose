@@ -1,0 +1,34 @@
+<script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
+
+Hello!
+
+Check the console
+
+<script type="text/javascript">
+  // const API_URL = "https://api.gethue.com"; // http://localhost:8005
+  const API_URL = "/";
+  axios.defaults.baseURL = API_URL;
+
+  axios.post('iam/v1/get/auth-token/', {username: "hue", password: "hue"}).then(function(data) {
+    console.log(data['data']);
+
+    // Util to check if cached token is still valid before asking to auth for a new one
+    axios.post('iam/v1/verify/auth-token/', {token: data['data']['token']});
+
+    axios.defaults.headers.common['Authorization'] = 'JWT ' + data['data']['token'];
+  }).then(function() {
+    axios.post('editor/v1/query/sqlite', {snippet: "{\"statement\":\"SELECT 1000, 1001\""}).then(function(data) {
+      console.log(data['data']);
+    });
+
+    axios.post('connectors/v1/types/').then(function(data) {
+      console.log(data['data']);
+    });
+  });
+
+</script>
+
+
+<!--
+  SQL Scratchpad
+-->
