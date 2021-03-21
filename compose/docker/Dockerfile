@@ -21,7 +21,7 @@ RUN python -m pip install /build && rm -rf /build
 COPY compose/docker/local_settings.py /usr/local/lib/python3.8/site-packages/compose/conf/local_settings.py
 # COPY compose/docker/local_settings.py compose/conf/local_settings.py
 
-RUN mkdir -p compose-ui/build && echo "Hello" >> compose-ui/build/index.html
+COPY compose-ui/index.html compose-ui/build/index.html
 
 COPY compose/docker/startup.sh .
 
