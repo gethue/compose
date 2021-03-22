@@ -103,7 +103,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "conf.wsgi.application"
 
-STATIC_ROOT = "compose-ui/build"
+STATIC_ROOT = "static"
 
 # Forever-cacheable files and compression support
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
