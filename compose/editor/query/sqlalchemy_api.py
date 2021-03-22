@@ -47,8 +47,8 @@ from compose.editor.query.exceptions import (
     QueryExpired,
 )
 
-ENGINES = {}
-CONNECTIONS = {}
+ENGINES = {}  # Sessions
+CONNECTIONS = {}  # Query Handles
 ENGINE_KEY = "%(username)s-%(connector_name)s"
 URL_PATTERN = "(?P<driver_name>.+?://)(?P<host>[^:/ ]+):(?P<port>[0-9]*).*"
 
@@ -70,7 +70,7 @@ def query_error_handler(func):
         except QueryExpired:
             raise
         except Exception as e:
-            message = force_unicode(e)
+            message = str(e)
             if (
                 "Invalid query handle" in message
                 or "Invalid OperationHandle" in message
@@ -84,6 +84,7 @@ def query_error_handler(func):
 
 
 # Api vs Client
+# Handle the DB client, reuse qhandles, session caches. Connector specific input?
 class SqlAlchemyInterface:
 
     # engine
@@ -243,9 +244,10 @@ class SqlAlchemyInterface:
         result = connection.execute(statement)
         print(result)
 
+        # cache == sa_query_handle
         cache = {
-            "connection": connection,
-            "result": result,
+            "connection": connection,  # Session
+            "result": result,  # Handle
             "meta": [
                 {
                     "name": col[0]
@@ -260,12 +262,13 @@ class SqlAlchemyInterface:
             ]
             if result.cursor
             else [],
+            "has_result_set": result.cursor != None,
         }
         CONNECTIONS[guid] = cache
 
         return {
             "sync": False,
-            "has_result_set": result.cursor != None,
+            "has_result_set": cache["has_result_set"],
             "modified_row_count": 0,
             "guid": guid,
             "result": {
@@ -279,4 +282,53 @@ class SqlAlchemyInterface:
         }
 
     def check_status(self, query_id):
-        return {"status": "running"}
+        handle = CONNECTIONS.get(query_id)
+
+        response = {"status": "canceled"}
+
+        if handle:
+            cursor = handle["result"].cursor
+            if self.options["url"].startswith("presto://") and cursor and cursor.poll():
+                response["status"] = "running"
+            elif handle["has_result_set"]:
+                response["status"] = "available"
+            else:
+                response["status"] = "success"
+        else:
+            raise QueryExpired()
+
+        return response
+
+    def fetch_result(self, query_id, rows=100, start_over=False):
+        handle = CONNECTIONS.get(query_id)
+
+        if handle:
+            data = handle["result"].fetchmany(rows)
+            meta = handle["meta"]
+            self._assign_types(data, meta)
+        else:
+            raise QueryExpired()
+
+        return {
+            "has_more": data and len(data) >= rows or False,
+            "data": data if data else [],
+            "meta": meta if meta else [],
+            "type": "table",
+        }
+
+    def _assign_types(self, results, meta):
+        result = results and results[0]
+        if result:
+            for index, col in enumerate(result):
+                if isinstance(col, int):
+                    meta[index]["type"] = "INT_TYPE"
+                elif isinstance(col, float):
+                    meta[index]["type"] = "FLOAT_TYPE"
+                elif isinstance(col, long):
+                    meta[index]["type"] = "BIGINT_TYPE"
+                elif isinstance(col, bool):
+                    meta[index]["type"] = "BOOLEAN_TYPE"
+                elif isinstance(col, datetime.date):
+                    meta[index]["type"] = "TIMESTAMP_TYPE"
+                else:
+                    meta[index]["type"] = "STRING_TYPE"

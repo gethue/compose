@@ -52,7 +52,7 @@ Auto schedule...
 # - handles
 # - sessions
 
-# Editor specific executor
+# "Editor" specific executor, "Autocomplete", ...?
 class Executor:
     """
     Compose specific: highest/simplest possible, "Fake" Editor API, combo Connectors/Sessions under hood
@@ -110,6 +110,11 @@ class Executor:
         data = self.connector.check_status(query_id)
 
         return {"status": data["status"]}
+
+    def fetch_result(self, query_id, rows=100, start_over=False):
+        data = self.connector.fetch_result(query_id, rows=rows, start_over=start_over)
+
+        return {"result": data}
 
     def autocomplete(self):
         pass

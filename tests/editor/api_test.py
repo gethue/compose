@@ -16,6 +16,7 @@
 # limitations under the License.
 
 import json
+from unittest.mock import patch
 
 import pytest
 from django.contrib.auth.models import User
@@ -45,9 +46,12 @@ class TestExecutor:
         assert data["uuid"] == "abc"
 
     def test_check_status(self):
-        resp = self.c.post(
-            reverse("editor:check_status"),
-        )
-        data = json.loads(resp.content)
+        with patch("compose.editor.api.Executor.check_status") as check_status:
+            check_status.return_value = {"status": "running"}
 
-        assert data["status"] == "running"
+            resp = self.c.post(
+                reverse("editor:check_status"),
+            )
+            data = json.loads(resp.content)
+
+            assert data["status"] == "running"

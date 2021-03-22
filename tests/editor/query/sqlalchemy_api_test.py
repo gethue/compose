@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from unittest.mock import Mock, patch
+
 import pytest
 
 from compose.editor.query.sqlalchemy_api import SqlAlchemyInterface
@@ -33,6 +35,45 @@ def test_query():
     data = connector.execute(query=query)
 
     assert data["result"]["data"] == [[1, 2, 3]]
+
+
+@pytest.mark.django_db
+def test_fetch_status():
+    interpreter = {
+        "options": {"url": "sqlite://"},
+        "name": "sqlite",
+        "dialect_properties": {},
+    }
+    connector = SqlAlchemyInterface(username="test", interpreter=interpreter)
+    query_id = "abc"
+
+    with patch("compose.editor.query.sqlalchemy_api.CONNECTIONS") as CONNECTIONS:
+        CONNECTIONS.get.return_value = {"result": Mock(), "has_result_set": True}
+
+        data = connector.check_status(query_id=query_id)
+
+        assert data["status"] == "available"
+
+
+@pytest.mark.django_db
+def test_fetch_result():
+    interpreter = {
+        "options": {"url": "sqlite://"},
+        "name": "sqlite",
+        "dialect_properties": {},
+    }
+    connector = SqlAlchemyInterface(username="test", interpreter=interpreter)
+    query_id = "abc"
+
+    with patch("compose.editor.query.sqlalchemy_api.CONNECTIONS") as CONNECTIONS:
+        CONNECTIONS.get.return_value = {
+            "result": Mock(fetchmany=Mock(return_value=[[1], [2], [3]])),
+            "meta": [{"type": "STRING_TYPE"}],
+        }
+
+        data = connector.fetch_result(query_id=query_id, rows=10, start_over=True)
+
+        assert data["data"] == [[1], [2], [3]]
 
 
 @pytest.mark.live

@@ -80,10 +80,33 @@ def test_execute_query_flow():
 
         assert data["status"] == "ready"
 
-    # fetch_result
+    with patch(
+        "compose.editor.query.engines.SqlAlchemyInterface.fetch_result"
+    ) as fetch_result:
+        fetch_result.return_value = {"data": [[1]], "meta": [["C1"]]}
+
+        data = Executor(username="test").fetch_result(query_id="abc")
+
+        assert {"data": [[1]], "meta": [["C1"]]} == data["result"]
 
     # fetch_result next
 
     # re-fetch result from 0 (download)
 
     # close query
+
+
+# @pytest.mark.live
+@pytest.mark.django_db
+def test_execute_query_flow_live():
+    executor = Executor(username="test")
+
+    data = executor.execute(statement="SELECT 1, 2, 3")
+    query_id = data["handle"].get("guid")
+    assert len(query_id) == 32
+
+    data = executor.check_status(query_id=query_id)
+    assert data["status"] == "available"
+
+    data = executor.fetch_result(query_id=query_id, rows=3, start_over=False)
+    assert data["result"]["data"] == []
