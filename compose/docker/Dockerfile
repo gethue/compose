@@ -15,13 +15,20 @@ RUN python -m pip install --upgrade pip
 # SHELL ["/bin/bash", "-c"]
 # RUN source python_env/bin/activate
 
+# UI
+# FROM node:14 AS ui
+# sudo apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+  && apt-get install -y nodejs
+RUN cd /build/compose-ui/sql-scratchpad && npm install && npm run build && mv build /app/static/
+COPY compose-ui/index.html /app/static/auth.html
+
+# API
 RUN python -m pip install /build && rm -rf /build
 
 # Should have a more elegant conf dir
 COPY compose/docker/local_settings.py /usr/local/lib/python3.8/site-packages/compose/conf/local_settings.py
 # COPY compose/docker/local_settings.py compose/conf/local_settings.py
-
-COPY compose-ui/index.html compose-ui/build/index.html
 
 COPY compose/docker/startup.sh .
 
