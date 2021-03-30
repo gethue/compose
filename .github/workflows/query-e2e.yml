@@ -57,7 +57,7 @@ jobs:
 
     - name: run tests
       run: |
-        pytest --cov=compose -m live
+        python compose/manage.py test -- --cov=compose -m live
 
     - name: Upload coverage
       uses: codecov/codecov-action@v1

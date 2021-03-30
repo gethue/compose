@@ -42,7 +42,7 @@ jobs:
 
     - name: run tests
       run: |
-        pytest --cov=compose
+        python compose/manage.py test -- --cov=compose
 
     - name: Upload coverage
       uses: codecov/codecov-action@v1
