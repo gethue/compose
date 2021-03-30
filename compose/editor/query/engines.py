@@ -79,7 +79,12 @@ class Executor:
 
     # For under the cover operations like install examples
     def query(self, statement):
-        pass
+        query = {
+            "statement": statement,
+            "database": None,
+            "dialect": self.dialect,
+        }
+        return self.connector.query(query)
 
     # Query Object? simple statement?
     # execute --> query

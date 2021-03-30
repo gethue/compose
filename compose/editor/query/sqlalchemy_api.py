@@ -212,10 +212,12 @@ class SqlAlchemyInterface:
 
         return connection
 
+    def query(self, query):
+        return self.execute(query, is_async=False)
+
     # @query_error_handler
-    def execute(self, query):
+    def execute(self, query, is_async=True):
         guid = uuid.uuid4().hex
-        is_async = False
 
         # session = self._get_session(notebook, snippet)
         # if session is not None:
@@ -267,7 +269,7 @@ class SqlAlchemyInterface:
         CONNECTIONS[guid] = cache
 
         return {
-            "sync": False,
+            "sync": not is_async,
             "has_result_set": cache["has_result_set"],
             "modified_row_count": 0,
             "guid": guid,

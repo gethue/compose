@@ -34,7 +34,7 @@
 
 import logging
 
-from django.http import JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework.decorators import api_view
@@ -45,41 +45,38 @@ LOG = logging.getLogger(__name__)
 
 
 @extend_schema(
-    description="Minimal API for submitting an SQL statement synchronously",
+    description="Sync SQL statement execution",
     request={"application/json": OpenApiTypes.OBJECT},
     responses=OpenApiTypes.STR,
 )
 @api_view(["POST"])
 def query(request, dialect=None):
-    print(request.data)
-    print(request.POST)
+    statement = request.data.get("statement")
 
-    statement = request.data.get("statement") or "SELECT 1, 2, 3"
+    if not statement:
+        return HttpResponseBadRequest()
 
-    # connector = {}
-    # query = Query(statement...)
-
-    data = Executor(username=request.user).execute(statement=statement)
-    # qhandle = Executor(dialect='dialect').execute(statement=statement)
-    # qhandle = Executor(connector).execute(query)
-
-    # data = Executor(connector).query(query)
+    data = Executor(username=request.user).query(statement=statement)
 
     return JsonResponse(data)
 
 
 @extend_schema(
-    description="Submitting an SQL statement asynchronously",
+    description="Async SQL statement execution",
     request=OpenApiTypes.STR,
     responses=OpenApiTypes.STR,
 )
 @api_view(["POST"])
 def execute(request, dialect=None):
-    request.data.get("statement") or "SELECT 1, 2, 3"
+    statement = request.data.get("statement")
+
+    if not statement:
+        return HttpResponseBadRequest()
 
     response = {"uuid": "abc", "handle": {}}
+    data = Executor(username=request.user).execute(statement=statement)
 
-    return JsonResponse(response)
+    return JsonResponse(data["handle"])
 
 
 @api_view(["POST"])
