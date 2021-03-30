@@ -41,40 +41,18 @@ from string import Template
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
-ENGINES = {}
-CONNECTIONS = {}
+from compose.editor.query.exceptions import (
+    AuthenticationRequired,
+    QueryError,
+    QueryExpired,
+)
+
+ENGINES = {}  # Sessions
+CONNECTIONS = {}  # Query Handles
 ENGINE_KEY = "%(username)s-%(connector_name)s"
 URL_PATTERN = "(?P<driver_name>.+?://)(?P<host>[^:/ ]+):(?P<port>[0-9]*).*"
 
 LOG = logging.getLogger(__name__)
-
-
-class SessionExpired(Exception):
-    pass
-
-
-class QueryExpired(Exception):
-    def __init__(self, message=None):
-        super(QueryExpired, self).__init__()
-        self.message = message
-
-
-class AuthenticationRequired(Exception):
-    def __init__(self, message=None):
-        super(AuthenticationRequired, self).__init__()
-        self.message = message
-
-    def __str__(self):
-        return "AuthenticationRequired: %s" % self.message
-
-
-class OperationTimeout(Exception):
-    def __str__(self):
-        return "OperationTimeout"
-
-
-class OperationNotSupported(Exception):
-    pass
 
 
 def query_error_handler(func):
@@ -92,7 +70,7 @@ def query_error_handler(func):
         except QueryExpired:
             raise
         except Exception as e:
-            message = force_unicode(e)
+            message = str(e)
             if (
                 "Invalid query handle" in message
                 or "Invalid OperationHandle" in message
@@ -105,10 +83,15 @@ def query_error_handler(func):
     return decorator
 
 
-class SqlAlchemyApi:
-    def __init__(self, user, interpreter):
+# Api vs Client
+# Handle the DB client, reuse qhandles, session caches. Connector specific input?
+class SqlAlchemyInterface:
+
+    # engine
+    #
+    def __init__(self, username, interpreter):
         # super(SqlAlchemyApi, self).__init__(user=user, interpreter=interpreter)
-        self.user = user
+        self.username = username
         self.interpreter = interpreter
 
         self.options = interpreter["options"]
@@ -125,9 +108,9 @@ class SqlAlchemyApi:
                 else "`"
             )
 
-    def _get_engine_key(self):
+    def _get_engine_key(self):  # --> to Executor?
         return ENGINE_KEY % {
-            "username": self.user.username,
+            "username": self.username,
             "connector_name": self.interpreter["name"],
         }
 
@@ -141,7 +124,7 @@ class SqlAlchemyApi:
 
     def _create_engine(self):
         if "${" in self.options["url"]:  # URL parameters substitution
-            vars = {"USER": self.user.username}
+            vars = {"USER": self.username}
 
             if "${PASSWORD}" in self.options["url"]:
                 auth_provided = False
@@ -164,6 +147,7 @@ class SqlAlchemyApi:
         else:
             url = self.options["url"]
 
+        # --> to move to py Hooks in connector types
         if url.startswith("awsathena+rest://"):
             url = url.replace(url[17:37], urllib_quote_plus(url[17:37]))
             url = url.replace(url[38:50], urllib_quote_plus(url[38:50]))
@@ -183,7 +167,7 @@ class SqlAlchemyApi:
             url = url.replace(
                 driver_name,
                 "%(driver_name)s%(username)s@"
-                % {"driver_name": driver_name, "username": self.user.username},
+                % {"driver_name": driver_name, "username": self.username},
             )
 
         if self.options.get("credentials_json"):
@@ -229,24 +213,24 @@ class SqlAlchemyApi:
         return connection
 
     # @query_error_handler
-    def execute(self, notebook, snippet):
+    def execute(self, query):
         guid = uuid.uuid4().hex
         is_async = False
 
-        session = self._get_session(notebook, snippet)
-        if session is not None:
-            self.options["session"] = session
+        # session = self._get_session(notebook, snippet)
+        # if session is not None:
+        #     self.options["session"] = session
 
         engine = self._get_engine()
         connection = self._create_connection(engine)
-        statement = snippet["statement"]
+        statement = query["statement"]
 
         if self.interpreter["dialect_properties"].get("trim_statement_semicolon", True):
             statement = statement.strip().rstrip(";")
 
         if self.interpreter["dialect_properties"].get(
             "has_use_statement"
-        ) and snippet.get("database"):
+        ) and query.get("database"):
             connection.execute(
                 "USE %(sql_identifier_quote)s%(database)s%(sql_identifier_quote)s"
                 % {
@@ -258,10 +242,12 @@ class SqlAlchemyApi:
             )
 
         result = connection.execute(statement)
+        print(result)
 
+        # cache == sa_query_handle
         cache = {
-            "connection": connection,
-            "result": result,
+            "connection": connection,  # Session
+            "result": result,  # Handle
             "meta": [
                 {
                     "name": col[0]
@@ -276,12 +262,13 @@ class SqlAlchemyApi:
             ]
             if result.cursor
             else [],
+            "has_result_set": result.cursor != None,
         }
         CONNECTIONS[guid] = cache
 
         return {
             "sync": False,
-            "has_result_set": result.cursor != None,
+            "has_result_set": cache["has_result_set"],
             "modified_row_count": 0,
             "guid": guid,
             "result": {
@@ -293,3 +280,55 @@ class SqlAlchemyApi:
                 "type": "table",
             },
         }
+
+    def check_status(self, query_id):
+        handle = CONNECTIONS.get(query_id)
+
+        response = {"status": "canceled"}
+
+        if handle:
+            cursor = handle["result"].cursor
+            if self.options["url"].startswith("presto://") and cursor and cursor.poll():
+                response["status"] = "running"
+            elif handle["has_result_set"]:
+                response["status"] = "available"
+            else:
+                response["status"] = "success"
+        else:
+            raise QueryExpired()
+
+        return response
+
+    def fetch_result(self, query_id, rows=100, start_over=False):
+        handle = CONNECTIONS.get(query_id)
+
+        if handle:
+            data = handle["result"].fetchmany(rows)
+            meta = handle["meta"]
+            self._assign_types(data, meta)
+        else:
+            raise QueryExpired()
+
+        return {
+            "has_more": data and len(data) >= rows or False,
+            "data": data if data else [],
+            "meta": meta if meta else [],
+            "type": "table",
+        }
+
+    def _assign_types(self, results, meta):
+        result = results and results[0]
+        if result:
+            for index, col in enumerate(result):
+                if isinstance(col, int):
+                    meta[index]["type"] = "INT_TYPE"
+                elif isinstance(col, float):
+                    meta[index]["type"] = "FLOAT_TYPE"
+                elif isinstance(col, long):
+                    meta[index]["type"] = "BIGINT_TYPE"
+                elif isinstance(col, bool):
+                    meta[index]["type"] = "BOOLEAN_TYPE"
+                elif isinstance(col, datetime.date):
+                    meta[index]["type"] = "TIMESTAMP_TYPE"
+                else:
+                    meta[index]["type"] = "STRING_TYPE"

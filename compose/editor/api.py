@@ -32,16 +32,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import logging
 
-import opentracing
 from django.http import JsonResponse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework.decorators import api_view
 
-from .sql_alchemy import SqlAlchemyApi
+from .query.engines import Executor
 
 LOG = logging.getLogger(__name__)
 
@@ -58,7 +56,14 @@ def query(request, dialect=None):
 
     statement = request.data.get("statement") or "SELECT 1, 2, 3"
 
-    data = _execute(user=request.user, dialect=dialect, statement=statement)
+    # connector = {}
+    # query = Query(statement...)
+
+    data = Executor(username=request.user).execute(statement=statement)
+    # qhandle = Executor(dialect='dialect').execute(statement=statement)
+    # qhandle = Executor(connector).execute(query)
+
+    # data = Executor(connector).query(query)
 
     return JsonResponse(data)
 
@@ -70,12 +75,9 @@ def query(request, dialect=None):
 )
 @api_view(["POST"])
 def execute(request, dialect=None):
-    json.loads(request.POST.get("notebook", "{}"))
-    json.loads(request.POST.get("snippet", "{}"))
+    request.data.get("statement") or "SELECT 1, 2, 3"
 
-    statement = request.data.get("statement") or "SELECT 1, 2, 3"
-
-    response = _execute(request.user, dialect, statement)
+    response = {"uuid": "abc", "handle": {}}
 
     return JsonResponse(response)
 
@@ -91,62 +93,23 @@ def autocomplete(
 
 
 @api_view(["POST"])
-def check_status():
+def check_status(request):
+    query_id = request.data.get("query_id")
+    # operation_id = request.POST.get('operationId')
+
+    data = Executor(username=request.user).check_status(query_id=query_id)
+
+    return JsonResponse(data)
+
+
+@api_view(["POST"])
+def fetch_result_data(request):
     pass
 
 
 @api_view(["POST"])
-def fetch_result_data():
+def get_logs(request):
     pass
-
-
-@api_view(["POST"])
-def get_logs():
-    pass
-
-
-def _execute(user, dialect, statement):
-    notebook = {}
-    snippet = {}
-
-    # Added
-    notebook["sessions"] = []
-    snippet["statement"] = statement
-
-    if dialect:
-        notebook["dialect"] = dialect
-
-    with opentracing.tracer.start_span("notebook-execute") as span:
-        span.set_tag("user-id", user.username)
-
-        response = _execute_notebook(user, notebook, snippet)
-
-        span.set_tag("query-id", response.get("handle", {}).get("guid"))
-
-        return response
-
-
-def _execute_notebook(user, notebook, snippet):
-    response = {"status": -1}
-
-    interpreter = {
-        "options": {"url": "sqlite:///db-demo.sqlite3"},
-        "name": "sqlite",
-        "dialect_properties": {},
-    }
-    interpreter = SqlAlchemyApi(user, interpreter=interpreter)
-    # interpreter = get_api(request, snippet)
-
-    with opentracing.tracer.start_span("interpreter") as span:
-        # interpreter.execute needs the sessions, but we don't want to persist them
-        # pre_execute_sessions = notebook['sessions']
-        # notebook['sessions'] = sessions
-        response["handle"] = interpreter.execute(notebook, snippet)
-        # notebook['sessions'] = pre_execute_sessions
-
-    response["status"] = 0
-
-    return response
 
 
 # API specs
