@@ -85,17 +85,13 @@ def test_fetch_result():
     ],
 )
 def test_execute_statement(dialect, url):
-    class User:
-        def __init__(self):
-            self.username = "test"
-
     interpreter = {
         "options": {"url": url},
         "name": dialect,
         "dialect_properties": {},
     }
 
-    interpreter = SqlAlchemyInterface(user=User(), interpreter=interpreter)
+    interpreter = SqlAlchemyInterface(user="test", interpreter=interpreter)
 
     notebook = {}
     snippet = {}
