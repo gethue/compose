@@ -96,7 +96,7 @@ def test_execute_query_flow():
     # close query
 
 
-# @pytest.mark.live
+@pytest.mark.live
 @pytest.mark.django_db
 def test_execute_query_flow_live():
     executor = Executor(username="test")

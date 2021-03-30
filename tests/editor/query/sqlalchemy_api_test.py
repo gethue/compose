@@ -91,13 +91,10 @@ def test_execute_statement(dialect, url):
         "dialect_properties": {},
     }
 
-    interpreter = SqlAlchemyInterface(user="test", interpreter=interpreter)
+    interpreter = SqlAlchemyInterface(username="test", interpreter=interpreter)
 
-    notebook = {}
-    snippet = {}
-    notebook["sessions"] = []
-    snippet["statement"] = "SELECT 1, 2, 3"
+    query = {"statement": "SELECT 1, 2, 3"}
 
-    resultset = interpreter.execute(notebook, snippet)
+    resultset = interpreter.execute(query=query)
 
     assert resultset["result"]["data"] == [[1, 2, 3]]
