@@ -40,7 +40,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path("desktop/", include("compose.connector.urls_hue4", namespace="hue4-desktop")),
+    path("desktop/", include("compose.connectors.urls_hue4", namespace="hue4-desktop")),
     path("notebook/api/", include("compose.editor.urls_hue4", namespace="hue4-editor")),
 ]
 

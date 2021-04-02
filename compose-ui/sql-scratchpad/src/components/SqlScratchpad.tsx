@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 
 import hueComponents from 'gethue/lib/components/QueryEditorWebComponents';
@@ -11,10 +12,14 @@ import { ExecuteProgress } from './ExecuteProgress';
 import { ResultTable } from './ResultTable';
 import {ExecuteLimit} from "./ExecuteLimit";
 
-const HUE_BASE_URL = 'http://localhost:8888'
+const API_URL = 'http://localhost:8005'
+
+axios.defaults.baseURL = API_URL;
+
+
 
 hueComponents.configure({
-  baseUrl: HUE_BASE_URL
+  baseUrl: API_URL
 });
 
 interface SqlScratchpadState {
@@ -37,21 +42,32 @@ export class SqlScratchpad extends React.Component<{}, SqlScratchpadState> {
 
   componentDidMount() {
     console.info('Refreshing config');
+    const _this = this;
 
-    hueConfig.refreshConfig().then(() => {
-      const connector = hueConfig.findEditorConnector(() => true); // Returns the first connector
+    axios.post('iam/v1/get/auth-token/', {username: "hue", password: "hue"}).then(function(data) {
+      console.log(data['data']);
 
-      this.setState({
-        executor: hueComponents.createExecutor({
-          compute: (() => ({ id: 'default' })) as KnockoutObservable<any>,
-          connector: (() => connector) as KnockoutObservable<any>,
-          database: (() => 'default') as KnockoutObservable<any>,
-          namespace: (() => ({ id: 'default' })) as KnockoutObservable<any>,
+      axios.post('iam/v1/verify/auth-token/', {token: data['data']['token']});
+
+      axios.defaults.headers.common['Authorization'] = 'JWT ' + data['data']['token'];
+    }).then(function() {
+      axios.post('/desktop/api2/get_config')
+      //hueConfig.refreshConfig()
+      .then(() => {
+        const connector = hueConfig.findEditorConnector(() => true); // Returns the first connector
+
+        _this.setState({
+          executor: hueComponents.createExecutor({
+            compute: (() => ({ id: 'default' })) as KnockoutObservable<any>,
+            connector: (() => connector) as KnockoutObservable<any>,
+            database: (() => 'default') as KnockoutObservable<any>,
+            namespace: (() => ({ id: 'default' })) as KnockoutObservable<any>,
+          })
         })
+      }).catch(() => {
+        console.warn('Failed loading the Hue config')
       })
-    }).catch(() => {
-      console.warn('Failed loading the Hue config')
-    })
+    });
   }
 
   setActiveExecutable(activeExecutable: SqlExecutable) {
