@@ -33,12 +33,17 @@ urlpatterns = [
 
 urlpatterns += [
     path("editor/v1/", include("compose.editor.urls", namespace="editor")),
-    path("notebook/api/", include("compose.editor.urls_hue4", namespace="hue4")),
 ]
 
 urlpatterns += [
     path("connectors/v1/", include("compose.connectors.urls", namespace="connectors"))
 ]
+
+urlpatterns += [
+    path("desktop/", include("compose.connector.urls_hue4", namespace="hue4-desktop")),
+    path("notebook/api/", include("compose.editor.urls_hue4", namespace="hue4-editor")),
+]
+
 
 urlpatterns += [
     path(

@@ -15,4 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Create your views here.
+from django.urls import re_path
+
+from . import api
+
+app_name = "connector"
+
+
+urlpatterns = [
+    re_path(r"^api2/get_config/?$", api.get_config, name="get_config"),
+]
