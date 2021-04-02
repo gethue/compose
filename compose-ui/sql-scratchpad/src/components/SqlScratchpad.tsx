@@ -51,8 +51,8 @@ export class SqlScratchpad extends React.Component<{}, SqlScratchpadState> {
 
       axios.defaults.headers.common['Authorization'] = 'JWT ' + data['data']['token'];
     }).then(function() {
-      axios.post('/desktop/api2/get_config')
-      //hueConfig.refreshConfig()
+      //axios.post('/desktop/api2/get_config')
+      hueComponents.refreshConfig()
       .then(() => {
         const connector = hueConfig.findEditorConnector(() => true); // Returns the first connector
 
