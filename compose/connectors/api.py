@@ -102,3 +102,27 @@ def get_config(request):
             "status": 0,
         }
     )
+
+
+@api_view(["GET"])
+def get_namespaces(request, id):
+    return Response(
+        {
+            "1": [
+                {
+                    "id": "default",
+                    "name": "default",
+                    "status": "CREATED",
+                    "computes": [
+                        {
+                            "id": "default",
+                            "name": "default",
+                            "type": "direct",
+                            "credentials": {},
+                        }
+                    ],
+                }
+            ],
+            "status": 0,
+        }
+    )
