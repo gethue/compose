@@ -94,6 +94,9 @@ def autocomplete(
     print(request.data)
     print(request.POST)
     data = execute(request)
+    from django.contrib.auth.models import User
+
+    print(len(User.objects.all()))
     return data
 
 
