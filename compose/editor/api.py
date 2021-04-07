@@ -61,6 +61,14 @@ def query(request, dialect=None):
     return JsonResponse(data)
 
 
+@api_view(["POST"])
+def create_session(request):
+
+    return JsonResponse(
+        {"status": 0, "session": {"type": "1", "id": None, "properties": []}}
+    )
+
+
 @extend_schema(
     description="Async SQL statement execution",
     request=OpenApiTypes.STR,
