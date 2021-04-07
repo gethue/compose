@@ -23,7 +23,7 @@ app_name = "editor"
 
 urlpatterns = [
     re_path(r"^create_session/?$", api.create_session, name="create_session"),
-    re_path(r"^execute/(?P<dialect>.+)/?$", api.query, name="execute"),
+    re_path(r"^execute/(?P<dialect>.+)/?$", api.execute, name="execute"),
     re_path(r"^check_status/?$", api.check_status, name="check_status"),
     re_path(r"^fetch_result_data/?$", api.fetch_result_data, name="fetch_result_data"),
     re_path(r"^get_logs/?$", api.get_logs, name="get_logs"),

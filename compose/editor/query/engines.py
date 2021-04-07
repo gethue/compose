@@ -15,79 +15,43 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Can use either module directly:
+- API: Django REST
+- Editor model: (load, save, historify, execute...) doc2 model, connector models, user models
+- Editor executor: engine (zero Django/models but dict inputs: interpreter, username). Editor API with execute and /autocomp
+- SQL client: sqlalchemy_client (native session_id, job_id), Flink? --> make a dialect instead. SQL based only. Live queries?
+"""
 
 from compose.editor.query.sqlalchemy_api import SqlAlchemyInterface
 
-ENGINES = {}
-CONNECTIONS = {}
+SESSIONS = {}
+HANDLES = {}
 
-"""
-just make it work, kiss, refacto clean decoupled starting from API
-then task
-User --> Sessions --> Queries (Saved vs History)
-Connector
 
-Can use either module directly
-- model
-- api: Django REST
-- executor: engine (0 Django)
-- interface: sqlalchemy_client (native session_id, job_id)
-
-Decoupled REST API, Py API [Editor API, native client API]
-SqlAlchemy based only (leverage dialects API --> sqlachemy, flink... (until getting a sqlalchemy client? or not worth it, easier to do dialect) except hue-proxy...)
-Session reuse / Cache py or persistence
-Goal is to support connectors, return uuid, offer reuse of session or not. Flink INSERT job, CREATE MODEL --> Hue id
-Easy support via Task, scheduled Task
-
-asyncio / stream
-more than 1 hue, task server? Handle routids?
-Multi concurrent queries
-Result Explorer
-Auto schedule...
-"""
-
-# 2 levels max: Executor / Interface
-
-# Caches
-# - handles
-# - sessions
-
-# "Editor" specific executor, "Autocomplete", ...?
 class Executor:
     """
-    Compose specific: highest/simplest possible, "Fake" Editor API, combo Connectors/Sessions under hood
-    Pure exec in Client (sqlalchemy)
+    Compose specific: highest/simplest possible, Editor API, combo Connectors/Dialects/Sessions data under hood
+    Pure exec is in Client (sqlalchemy)
     Hue UUID wrapper around native handle, manage caches, dialects
+    Session reuse / Cache py or persistence
+    Goal is to support connectors, return uuid, offer reuse of session or not. Flink INSERT job, CREATE MODEL --> Hue id (Multi concurrent queries)
+    Easy support via Task, scheduled Task, importer create table "jobs", Result Explorer tasks ...
     """
 
-    def __init__(self, username, dialect="hive"):  # dialect or connector id?
+    def __init__(self, username, interpreter):
         self.username = username
-        self.dialect = dialect
-
-        # connector py / Hue connector instance
-        # session
-        #   py: process, _get_engine() ... Session table? Or pure frontend/py var? (--> decoupled py/rest...)
-        #   argument: e.g. Editor page, still valid with SqlAlchemy, Task Server?
-        # QueryHistory / connection
-        interpreter = {
-            "options": {
-                "url":
-                # "sqlite:///db-demo.sqlite3"
-                "mysql://hue:hue@localhost:3306/hue"
-            },
-            "name": "sqlite",
-            "dialect_properties": {},
-            "dialect": dialect,
-        }
-        # Currently we only have sqlalchemy as interface
-        self.connector = SqlAlchemyInterface(username, interpreter)  # Api + Client
+        self.interpreter = interpreter
+        self.connector = SqlAlchemyInterface(
+            username, interpreter
+        )  # Only SqlAlchemy as interface --> client
 
     # For under the cover operations like install examples
     def query(self, statement):
         query = {
             "statement": statement,
             "database": None,
-            "dialect": self.dialect,
+            "dialect": self.interpreter["dialect"],
         }
         return self.connector.query(query)
 
@@ -107,7 +71,7 @@ class Executor:
         query = {
             "statement": statement,
             "database": None,
-            "dialect": self.dialect,
+            "dialect": self.interpreter["dialect"],
         }
         response["handle"] = self.connector.execute(query)
         # notebook['sessions'] = pre_execute_sessions

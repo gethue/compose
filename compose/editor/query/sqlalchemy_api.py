@@ -91,11 +91,8 @@ def query_error_handler(func):
 
 
 # Api vs Client
-# Handle the DB client, reuse qhandles, session caches. Connector specific input?
+# Handle the DB client. Also reuse qhandles, session caches?
 class SqlAlchemyInterface:
-
-    # engine
-    #
     def __init__(self, username, interpreter):
         # super(SqlAlchemyApi, self).__init__(user=user, interpreter=interpreter)
         self.username = username
@@ -130,7 +127,9 @@ class SqlAlchemyInterface:
         return ENGINES[engine_key]
 
     def _create_engine(self):
-        if "${" in self.options["url"]:  # URL parameters substitution
+        if (
+            "${" in self.options["url"]
+        ):  # URL parameters substitution, should be in Engine as custom to Hue globally
             vars = {"USER": self.username}
 
             if "${PASSWORD}" in self.options["url"]:

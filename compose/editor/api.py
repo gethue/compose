@@ -32,6 +32,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import logging
 
 from django.http import HttpResponseBadRequest, JsonResponse
@@ -76,23 +77,31 @@ def create_session(request):
 )
 @api_view(["POST"])
 def execute(request, dialect=None):
-    statement = request.data.get("statement")
+    statement = (
+        request.data.get("statement")
+        or json.loads(request.data.get("executable"))["statement"]
+    )
+    interpreter = _get_interpreter(request.data)
 
     if not statement:
         return HttpResponseBadRequest()
 
-    response = {"uuid": "abc", "handle": {}}
-    data = Executor(username=request.user).execute(statement=statement)
+    data = Executor(username=request.user, interpreter=interpreter).execute(
+        statement=statement
+    )
 
-    return JsonResponse(data["handle"])
+    return JsonResponse(data["handle"])  # {"uuid": "abc", "handle": {}}
 
 
 @api_view(["POST"])
 def check_status(request):
     query_id = request.data.get("query_id")
     # operation_id = request.POST.get('operationId')
+    interpreter = _get_interpreter(request.data)
 
-    data = Executor(username=request.user).check_status(query_id=query_id)
+    data = Executor(username=request.user, interpreter=interpreter).check_status(
+        query_id=query_id
+    )
 
     return JsonResponse(data)
 
@@ -112,11 +121,32 @@ def autocomplete(request, database=None, table=None, column=None, nested=None):
     print(request.data)
     print(request.POST)
 
-    data = Executor(username=request.user).autocomplete(
+    interpreter = _get_interpreter(request.data)
+
+    data = Executor(username=request.user, interpreter=interpreter).autocomplete(
         database=database, table=table, column=column, nested=nested
     )
 
     return JsonResponse(data)
+
+
+def _get_interpreter(data):
+    # snippet: {"type":"1","source":"data"}
+    snippet = data.get("snippet")
+    connector_id = json.loads(snippet)["type"]  # Could be id or full
+
+    interpreter = {
+        "options": {
+            "url":
+            # "sqlite:///db-demo.sqlite3"
+            "mysql://hue:hue@localhost:3306/hue"
+        },
+        "name": "mysql",
+        "dialect_properties": {},
+        "dialect": "mysql",
+    }
+
+    return interpreter
 
 
 # API specs
