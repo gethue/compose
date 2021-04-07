@@ -53,7 +53,7 @@ export const SqlScratchpad: FC = () => {
     } catch {
       console.warn('Failed loading namespaces.')
     }
-  }
+  };
 
   useEffect(() => {
     setup().catch();

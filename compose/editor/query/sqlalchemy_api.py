@@ -32,14 +32,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import datetime
 import json
 import logging
 import re
+import textwrap
 import uuid
 from string import Template
 
-from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy import MetaData, Table, create_engine, inspect
+from sqlalchemy.exc import (
+    CompileError,
+    NoSuchTableError,
+    OperationalError,
+    UnsupportedCompilationError,
+)
 
 from compose.editor.query.exceptions import (
     AuthenticationRequired,
@@ -318,6 +325,75 @@ class SqlAlchemyInterface:
             "type": "table",
         }
 
+    def autocomplete(
+        self,
+        database=None,
+        table=None,
+        column=None,
+        nested=None,
+        operation=None,
+    ):
+        if self.interpreter["dialect"] == "phoenix":
+            if database:
+                database = database.upper()
+            if table:
+                table = table.upper()
+        engine = self._get_engine()
+        inspector = inspect(engine)
+
+        assist = Assist(inspector, engine, backticks=self.backticks)
+        response = {"status": -1}
+
+        if operation == "functions":
+            response["functions"] = []
+        elif operation == "function":
+            response["function"] = {}
+        elif database is None:
+            response["databases"] = [db or "" for db in assist.get_databases()]
+        elif table is None and operation == "models":
+            response["models"] = [t for t in assist.get_models(database)]
+        elif table is None:
+            tables_meta = []
+            for t in assist.get_table_names(database):
+                t = self._fix_bigquery_db_prefixes(t)
+                tables_meta.append({"name": t, "type": "Table", "comment": ""})
+            for t in assist.get_view_names(database):
+                t = self._fix_bigquery_db_prefixes(t)
+                tables_meta.append({"name": t, "type": "View", "comment": ""})
+            response["tables_meta"] = tables_meta
+        elif column is None:
+            columns = assist.get_columns(database, table)
+
+            response["columns"] = [col["name"] for col in columns]
+            response["extended_columns"] = [
+                {
+                    "autoincrement": col.get("autoincrement"),
+                    "comment": col.get("comment"),
+                    "default": col.get("default"),
+                    "name": col.get("name"),
+                    "nullable": col.get("nullable"),
+                    "type": self._get_column_type_name(col),
+                }
+                for col in columns
+            ]
+
+            if (
+                not self.options["url"].startswith("phoenix://")
+                and operation != "model"
+            ):
+                response.update(assist.get_keys(database, table))
+        else:
+            columns = assist.get_columns(database, table)
+            response["name"] = next(
+                (col["name"] for col in columns if column == col["name"]), ""
+            )
+            response["type"] = next(
+                (str(col["type"]) for col in columns if column == col["name"]), ""
+            )
+
+        response["status"] = 0
+        return response
+
     def _assign_types(self, results, meta):
         result = results and results[0]
         if result:
@@ -326,11 +402,111 @@ class SqlAlchemyInterface:
                     meta[index]["type"] = "INT_TYPE"
                 elif isinstance(col, float):
                     meta[index]["type"] = "FLOAT_TYPE"
-                elif isinstance(col, long):
-                    meta[index]["type"] = "BIGINT_TYPE"
                 elif isinstance(col, bool):
                     meta[index]["type"] = "BOOLEAN_TYPE"
                 elif isinstance(col, datetime.date):
                     meta[index]["type"] = "TIMESTAMP_TYPE"
                 else:
                     meta[index]["type"] = "STRING_TYPE"
+
+    def _get_column_type_name(self, col):
+        try:
+            name = str(col.get("type"))
+        except (UnsupportedCompilationError, CompileError):
+            name = col.get("type").__visit_name__.lower()
+
+        return name
+
+    def _fix_bigquery_db_prefixes(self, identifier):
+        if type(identifier) == dict and identifier.get("type") == "model":
+            identifier["type"] = "Model"
+
+        if self.options["url"].startswith("bigquery://"):
+            identifier["name"] = identifier["name"].rsplit(".", 1)[-1]
+
+        return identifier
+
+
+class Assist(object):
+    def __init__(self, db, engine, backticks, api=None):
+        self.db = db
+        self.engine = engine
+        self.backticks = backticks
+        self.api = api
+
+    def get_databases(self):
+        return self.db.get_schema_names()
+
+    def get_table_names(self, database, table_names=[]):
+        return self.db.get_table_names(database)
+
+    def get_view_names(self, database, view_names=[]):
+        return self.db.get_view_names(database)
+
+    def get_tables(self, database, table_names=[]):
+        return self.get_table_names(database) + self.get_view_names(database)
+
+    def get_models(self, database):
+        return [
+            t for t in self.db.get_table_names(database) if isinstance(t, dict)
+        ]  # Currently only supported by pybigquery
+
+    def get_columns(self, database, table):
+        try:
+            return self.db.get_columns(table, database)
+        except NoSuchTableError:
+            return []
+
+    def get_sample_data(self, database, table, column=None, operation=None):
+        if operation == "hello":
+            statement = "SELECT 'Hello World!'"
+        elif operation == "model":
+            return [], []
+        elif operation is not None and operation != "default":
+            statement = (
+                "SELECT * FROM (%s) LIMIT 1000" % operation
+                if operation.strip().lower().startswith("select")
+                else operation
+            )
+        else:
+            column = (
+                "%(backticks)s%(column)s%(backticks)s"
+                % {"backticks": self.backticks, "column": column}
+                if column
+                else "*"
+            )
+            statement = textwrap.dedent(
+                """\
+        SELECT %(column)s
+        FROM %(backticks)s%(database)s%(backticks)s.%(backticks)s%(table)s%(backticks)s
+        LIMIT %(limit)s
+        """
+                % {
+                    "database": database,
+                    "table": table,
+                    "column": column,
+                    "limit": 100,
+                    "backticks": self.backticks,
+                }
+            )
+
+        connection = self.api._create_connection(self.engine)
+        try:
+            result = connection.execute(statement)
+            return result.cursor.description, result.fetchall()
+        finally:
+            connection.close()
+
+    def get_keys(self, database, table):
+        meta = MetaData()
+        metaTable = Table(
+            table, meta, schema=database, autoload=True, autoload_with=self.engine
+        )
+
+        return {
+            "foreign_keys": [
+                {"name": fk.parent.name, "to": fk.target_fullname}
+                for fk in metaTable.foreign_keys
+            ],
+            "primary_keys": [{"name": pk.name} for pk in metaTable.primary_key.columns],
+        }

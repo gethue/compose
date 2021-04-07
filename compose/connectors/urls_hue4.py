@@ -24,7 +24,7 @@ app_name = "connector"
 
 urlpatterns = [
     re_path(r"^api2/get_config/?$", api.get_config, name="get_config"),
-    re_path(
+    re_path(  # To not support anymore going forward, unused
         r"^api2/context/namespaces/(?P<id>\d+)/?$",
         api.get_namespaces,
         name="get_namespaces",

@@ -88,16 +88,6 @@ def execute(request, dialect=None):
 
 
 @api_view(["POST"])
-def autocomplete(
-    request, server=None, database=None, table=None, column=None, nested=None
-):
-    print(request.data)
-    print(request.POST)
-    data = execute(request)
-    return data
-
-
-@api_view(["POST"])
 def check_status(request):
     query_id = request.data.get("query_id")
     # operation_id = request.POST.get('operationId')
@@ -115,6 +105,18 @@ def fetch_result_data(request):
 @api_view(["POST"])
 def get_logs(request):
     pass
+
+
+@api_view(["POST"])
+def autocomplete(request, database=None, table=None, column=None, nested=None):
+    print(request.data)
+    print(request.POST)
+
+    data = Executor(username=request.user).autocomplete(
+        database=database, table=table, column=column, nested=nested
+    )
+
+    return JsonResponse(data)
 
 
 # API specs

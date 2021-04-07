@@ -70,9 +70,14 @@ class Executor:
         #   argument: e.g. Editor page, still valid with SqlAlchemy, Task Server?
         # QueryHistory / connection
         interpreter = {
-            "options": {"url": "sqlite:///db-demo.sqlite3"},
+            "options": {
+                "url":
+                # "sqlite:///db-demo.sqlite3"
+                "mysql://hue:hue@localhost:3306/hue"
+            },
             "name": "sqlite",
             "dialect_properties": {},
+            "dialect": dialect,
         }
         # Currently we only have sqlalchemy as interface
         self.connector = SqlAlchemyInterface(username, interpreter)  # Api + Client
@@ -121,8 +126,12 @@ class Executor:
 
         return {"result": data}
 
-    def autocomplete(self):
-        pass
+    def autocomplete(self, database=None, table=None, column=None, nested=None):
+        data = self.connector.autocomplete(
+            database=database, table=table, column=column, nested=nested
+        )
+
+        return data
 
 
 # class ExecutorTracer():
