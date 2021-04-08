@@ -101,7 +101,7 @@ Ask for JWT token:
 
     curl -X POST -d "username=hue&password=hue" http://localhost:8000/api-token-auth/
 
-    curl -X POST http://localhost:8000/query/ --data 'snippet={"statement":"SELECT 1000, 1001"}' -H "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Imh1ZSIsImV4cCI6MTYxMjk3MTc0MywiZW1haWwiOiJodWVAZ2V0aHVlLmNvbSIsIm9yaWdfaWF0IjoxNjEyODg1MzQzfQ._HViX-D9h1ZfcXPAaY4KL0SNkx7MvXCH41T8Upkja3o" | jq
+    curl -X POST http://localhost:8000/query/ --data 'snippet={"statement":"SELECT 1000, 1001"}' -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Imh1ZSIsImV4cCI6MTYxMjk3MTc0MywiZW1haWwiOiJodWVAZ2V0aHVlLmNvbSIsIm9yaWdfaWF0IjoxNjEyODg1MzQzfQ._HViX-D9h1ZfcXPAaY4KL0SNkx7MvXCH41T8Upkja3o" | jq
 
 Basic Auth without token:
 
@@ -123,7 +123,7 @@ A live demo with the SQL Scratchpad is coming. In the meantime:
         // Util to check if cached token is still valid before asking to auth for a new one
         axios.post('v1/iam/verify/auth-token/', {token: data['data']['token']});
 
-        axios.defaults.headers.common['Authorization'] = 'JWT ' + data['data']['token'];
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + data['data']['token'];
       }).then(function() {
         axios.post('/v1/editor/query/sqlite', {snippet: "{\"statement\":\"SELECT 1000, 1001\""}).then(function(data) {
           console.log(data['data']);
