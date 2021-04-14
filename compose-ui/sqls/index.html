@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>SQL Scratchpad</title>
+    <script type = "text/javascript" src="node_modules/gethue/lib/components/SqlScratchpadWebComponent.js"></script>
+    <script type = "text/javascript">
+      window.onload = async function (){
+        var sqlScratchpadComp = document.getElementById("ss");
+        sqlScratchpadComp.setBaseUrl('http://locahost:9000');
+        await sqlScratchpadComp.login('hue', 'hue');
+      };
+    </script>
+  </head>
+  <body>
+    <sql-scratchpad dialect="mysql" id="ss"/>
+  </body>
+</html>

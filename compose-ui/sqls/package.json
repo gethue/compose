@@ -1,0 +1,27 @@
+{
+  "name": "sql-scratchpad",
+  "version": "1.0.0",
+  "description": "Smart lightweight SQL Scratchpad",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gethue/compose.git"
+  },
+  "keywords": [
+    "SQL",
+    "SQL Editor",
+    "SQL Scratchpad"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/compose/hue/issues"
+  },
+  "homepage": "https://github.com/compose/hue#readme",
+  "dependencies": {
+    "gethue": "4.9.7"
+  }
+}
