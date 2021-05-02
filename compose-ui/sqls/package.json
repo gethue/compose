@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/compose/hue#readme",
   "dependencies": {
-    "gethue": "4.9.7"
+    "gethue": "4.9.8"
   }
 }

@@ -1,16 +1,18 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>SQL Scratchpad</title>
-    <script type = "text/javascript" src="node_modules/gethue/lib/components/SqlScratchpadWebComponent.js"></script>
-    <script type = "text/javascript">
-      window.onload = async function (){
-        var sqlScratchpadComp = document.getElementById("ss");
-        sqlScratchpadComp.setBaseUrl('http://locahost:9000');
-        await sqlScratchpadComp.login('hue', 'hue');
-      };
-    </script>
-  </head>
-  <body>
-    <sql-scratchpad dialect="mysql" id="ss"/>
-  </body>
+<head>
+        <title>Queso for pres!</title>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.12.1/polyfill.min.js"></script>
+        <script type="text/javascript" src="./node_modules/gethue/lib/components/SqlScratchpadWebComponent.js"></script>
+</head>
+<body>
+        <div id="scratchpadContainer">Loading...</div>
+</body>
+
+<script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+          window.SqlScratchpadWebComponent.setBaseUrl('http://localhost:9000');
+          document.getElementById('scratchpadContainer').innerHTML = '<sql-scratchpad />';
+        });
+</script>
 </html>
