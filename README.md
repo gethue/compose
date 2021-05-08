@@ -40,14 +40,14 @@ Pypi
 
 One time
 
-    git clone https://github.com/gethue/compose.git; cd compose
+    git clone https://github.com/gethue/compose.git
+    cd compose
     ./install.sh  # If you want a Python virtual-env
     pre-commit install
 
 Start API
 
     source python_env/bin/activate
-    cd compose
     python compose/manage.py runserver 0.0.0.0:8005
 
 Config
